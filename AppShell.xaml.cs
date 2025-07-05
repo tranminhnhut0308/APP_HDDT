@@ -1,5 +1,6 @@
 ﻿using MyLoginApp.Pages.BaoCao;
 using MyLoginApp.Pages.Controls;
+using MyLoginApp.Services;
 namespace MyLoginApp;
 
 

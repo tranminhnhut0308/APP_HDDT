@@ -18,6 +18,11 @@ using ZXing.SkiaSharp;
 using Microsoft.Maui.Controls;
 using Microsoft.Maui.Graphics;
 using System.Text;
+using MyLoginApp.Services;
+using Microsoft.Extensions.DependencyInjection;
+using KhachHang = MyLoginApp.Models.DanhMuc.KhachHang;
+using HangHoaModel = MyLoginApp.Models.HangHoaModel;
+using HoaDonPage = MyLoginApp.Views.HoaDonPage;
 
 namespace MyLoginApp.Pages
 {
@@ -48,6 +53,7 @@ namespace MyLoginApp.Pages
         private decimal TongTien = 0;
         private string maCCCDDaQuet; // Thêm biến để lưu mã CCCD đã quét
         private KhachHang khachHangTuCCCD; // Thêm biến để lưu khách hàng từ CCCD
+        private readonly IElectronicInvoiceService _electronicInvoiceService;
 
         // Danh sách lưu trữ các mặt hàng đã quét
         private List<ScannedItem> scannedItems = new List<ScannedItem>();
@@ -55,8 +61,9 @@ namespace MyLoginApp.Pages
         public BanVangPage()
         {
             InitializeComponent();
+            // Sử dụng service locator pattern để lấy service
+            _electronicInvoiceService = MauiProgram.Services.GetService<IElectronicInvoiceService>();
             // InitializeAudioPlayerAsync();
-
         }
         private async void InitializeAudioPlayerAsync()
         {
@@ -111,6 +118,18 @@ namespace MyLoginApp.Pages
 
                 if (phieuXuatCreated)
                 {
+                    // Tạo hóa đơn điện tử
+                    bool electronicInvoiceCreated = await CreateElectronicInvoiceAsync();
+
+                    if (electronicInvoiceCreated)
+                    {
+                        await DisplayAlert("Thành công", "✅ Hóa đơn điện tử đã được tạo thành công!", "OK");
+                    }
+                    else
+                    {
+                        await DisplayAlert("Cảnh báo", "⚠️ Hóa đơn điện tử tạo thất bại, nhưng phiếu xuất đã được lưu.", "OK");
+                    }
+
                     // Chuyển sang trang HoaDonPage để xem chi tiết hóa đơn
                     await Navigation.PushAsync(new HoaDonPage(khachHangDaChon, scannedItems, ThanhToan));
 
@@ -149,15 +168,24 @@ namespace MyLoginApp.Pages
 
                 await using var transaction = await conn.BeginTransactionAsync();
 
-                // Kiểm tra trùng phiếu xuất cho tất cả mặt hàng
+                // Kiểm tra tồn kho cho tất cả mặt hàng
                 foreach (var item in danhSachSanPham)
                 {
-                    var checkCmd = new MySqlCommand("SELECT COUNT(*) FROM phx_chi_tiet_phieu_xuat WHERE HANGHOAID = @HangHoaId", conn, transaction);
+                    var checkCmd = new MySqlCommand("SELECT SL_TON FROM ton_kho WHERE HANGHOAID = @HangHoaId", conn, transaction);
                     checkCmd.Parameters.AddWithValue("@HangHoaId", item.Id);
-                    var count = Convert.ToInt64(await checkCmd.ExecuteScalarAsync());
-                    if (count > 0)
+                    var result = await checkCmd.ExecuteScalarAsync();
+                    
+                    if (result == null || result == DBNull.Value)
                     {
-                        await DisplayAlert("Thông báo", $"Hàng hóa {item.Name} (mã: {item.Id}) đã được xuất bán trước đó.", "OK");
+                        await DisplayAlert("Thông báo", $"Hàng hóa {item.Name} (mã: {item.Id}) không có trong tồn kho.", "OK");
+                        await transaction.RollbackAsync();
+                        return false;
+                    }
+                    
+                    int slTon = Convert.ToInt32(result);
+                    if (slTon <= 0)
+                    {
+                        await DisplayAlert("Thông báo", $"Hàng hóa {item.Name} (mã: {item.Id}) đã hết tồn kho (SL_TON = {slTon}).", "OK");
                         await transaction.RollbackAsync();
                         return false;
                     }
@@ -302,7 +330,10 @@ namespace MyLoginApp.Pages
             frameCustomerSelectionArea.IsVisible = true; // Hiển thị khung chứa các tùy chọn
             frameNhapTenKhach.IsVisible = true; // Mặc định hiển thị nhập tên
             lblHoac.IsVisible = true; // Mặc định hiển thị nhãn "Hoặc"
-            btnQuetCCCD.IsVisible = true; // Mặc định hiển thị nút "Quét CCCD"
+            if (btnQuetCCCD != null)
+            {
+                btnQuetCCCD.IsVisible = true; // Mặc định hiển thị nút "Quét CCCD"
+            }
 
             frameThemKhach.IsVisible = false;
             lblKhachHangDaChon.IsVisible = false;
@@ -329,13 +360,19 @@ namespace MyLoginApp.Pages
                 btnXacNhanKhach.IsVisible = false;
                 frameThemKhach.IsVisible = false;
                 lblHoac.IsVisible = true; // Hiển thị lại nhãn "Hoặc" nếu trường tên trống
-                btnQuetCCCD.IsVisible = true; // Hiển thị lại nút "Quét CCCD" nếu trường tên trống
+                if (btnQuetCCCD != null)
+                {
+                    btnQuetCCCD.IsVisible = true; // Hiển thị lại nút "Quét CCCD" nếu trường tên trống
+                }
                 return;
             }
 
             // Ẩn nhãn "Hoặc" và nút "Quét CCCD" khi bắt đầu nhập tên
             lblHoac.IsVisible = false;
-            btnQuetCCCD.IsVisible = false;
+            if (btnQuetCCCD != null)
+            {
+                btnQuetCCCD.IsVisible = false;
+            }
 
             var khach = DanhSachKhachHang.FirstOrDefault(k => k.TenKH.ToLower().Contains(tenNhap));
 
@@ -829,7 +866,10 @@ namespace MyLoginApp.Pages
             lblCCCDInfo.IsVisible = false;
             btnXacNhanCCCD.IsVisible = false;
             lblHoac.IsVisible = false; // Ẩn nhãn "Hoặc"
-            btnQuetCCCD.IsVisible = false; // Ẩn nút "Quét CCCD" sau khi nhấn
+            if (btnQuetCCCD != null)
+            {
+                btnQuetCCCD.IsVisible = false; // Ẩn nút "Quét CCCD" sau khi nhấn
+            }
 
             try
             {
@@ -934,5 +974,73 @@ namespace MyLoginApp.Pages
             }
         }
 
+        private async Task<bool> CreateElectronicInvoiceAsync()
+        {
+            try
+            {
+                // Chuẩn bị danh sách hàng hóa cho hóa đơn điện tử
+                var invoiceItems = new List<InvoiceItem>();
+                string orderCode = $"PX{DateTime.Now:yyyyMMddHHmmss}";
+
+                foreach (var item in scannedItems)
+                {
+                    // Thêm mặt hàng vàng
+                    decimal quantity = item.Weight / 100m; // Chuyển đổi từ gram sang chỉ
+                    decimal unitPrice = item.Price;
+                    decimal itemTotalAmountBeforeLabor = item.Total - (item.HangHoa?.GiaCong ?? 0);
+                    decimal taxRate = 0;
+                    decimal taxAmount = 0;
+                    decimal itemTotalAmountWithTax = itemTotalAmountBeforeLabor;
+
+                    invoiceItems.Add(new InvoiceItem
+                    {
+                        ItemName = item.Name,
+                        UnitName = "Chỉ",
+                        Quantity = quantity,
+                        UnitPrice = unitPrice,
+                        ItemTotalAmountWithoutTax = itemTotalAmountBeforeLabor,
+                        TaxRate = taxRate,
+                        TaxAmount = taxAmount,
+                        ItemTotalAmountWithTax = itemTotalAmountWithTax
+                    });
+
+                    // Thêm mục tiền công nếu có
+                    if (item.HangHoa?.GiaCong > 0)
+                    {
+                        invoiceItems.Add(new InvoiceItem
+                        {
+                            ItemName = $"Tiền công - {item.Name}",
+                            UnitName = "Cái",
+                            Quantity = 1,
+                            UnitPrice = item.HangHoa.GiaCong,
+                            ItemTotalAmountWithoutTax = item.HangHoa.GiaCong,
+                            TaxRate = 0,
+                            TaxAmount = 0,
+                            ItemTotalAmountWithTax = item.HangHoa.GiaCong
+                        });
+                    }
+                }
+
+                // Gọi service tạo hóa đơn điện tử
+                bool result = await _electronicInvoiceService.CreateElectronicInvoiceAsync(
+                    invoiceItems,
+                    ThanhToan,
+                    0, // discountAmount
+                    khachHangDaChon.MaKH,
+                    khachHangDaChon.TenKH,
+                    khachHangDaChon.DiaChi,
+                    khachHangDaChon.SoDienThoai,
+                    khachHangDaChon.CMND,
+                    orderCode
+                );
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Lỗi tạo hóa đơn điện tử: {ex.Message}");
+                return false;
+            }
+        }
     }
 }

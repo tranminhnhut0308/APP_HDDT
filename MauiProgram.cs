@@ -5,11 +5,14 @@ using MyLoginApp.ViewModels;
 using ZXing.Net.Maui.Controls;
 using MyLoginApp.ViewModels.BaoCao;
 using MyLoginApp.Pages.BaoCao;
+using MyLoginApp.Services;
 
 namespace MyLoginApp;
 
 public static class MauiProgram
 {
+    public static IServiceProvider Services { get; private set; }
+
     public static MauiApp CreateMauiApp()
     {
         var builder = MauiApp.CreateBuilder();
@@ -38,6 +41,12 @@ public static class MauiProgram
         // Đăng ký Pages
         builder.Services.AddSingleton<PhieuXuatPage>();
 
-        return builder.Build();
+        // Đăng ký Services
+        builder.Services.AddSingleton<IElectronicInvoiceService, ElectronicInvoiceService>();
+        builder.Services.AddSingleton<AppShell>();
+
+        var app = builder.Build();
+        Services = app.Services;
+        return app;
     }
 }

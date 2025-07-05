@@ -148,6 +148,7 @@
 		<PackageReference Include="ZXing.Net.Bindings.SkiaSharp" Version="0.16.10" />
 
 		<PackageReference Include="ZXing.Net.Maui" Version="0.4.0" />
+		<PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
 
 	</ItemGroup>
 

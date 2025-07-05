@@ -177,15 +177,21 @@ namespace MyLoginApp.Pages
                     
                     if (result == null || result == DBNull.Value)
                     {
-                        await DisplayAlert("Thông báo", $"Hàng hóa {item.Name} (mã: {item.Id}) không có trong tồn kho.", "OK");
+                        await DisplayAlert("❌ Không thể bán", $"Hàng hóa {item.Name} (mã: {item.Id}) không có trong tồn kho.", "OK");
                         await transaction.RollbackAsync();
                         return false;
                     }
                     
                     int slTon = Convert.ToInt32(result);
-                    if (slTon <= 0)
+                    if (slTon == 0)
                     {
-                        await DisplayAlert("Thông báo", $"Hàng hóa {item.Name} (mã: {item.Id}) đã hết tồn kho (SL_TON = {slTon}).", "OK");
+                        await DisplayAlert("❌ Không thể bán", $"không bán được : SL_TON = 0", "OK");
+                        await transaction.RollbackAsync();
+                        return false;
+                    }
+                    else if (slTon < 0)
+                    {
+                        await DisplayAlert("❌ Lỗi dữ liệu", $"Hàng hóa {item.Name} (mã: {item.Id}) có dữ liệu tồn kho không hợp lệ (SL_TON = {slTon}).", "OK");
                         await transaction.RollbackAsync();
                         return false;
                     }
@@ -680,6 +686,29 @@ namespace MyLoginApp.Pages
                             return;
                         }
 
+                        // Kiểm tra số lượng tồn kho
+                        using var conn = await DatabaseHelper.GetOpenConnectionAsync();
+                        if (conn != null)
+                        {
+                            var checkCmd = new MySqlCommand("SELECT SL_TON FROM ton_kho WHERE HANGHOAID = @HangHoaId", conn);
+                            checkCmd.Parameters.AddWithValue("@HangHoaId", qrResult.Trim());
+                            var result = await checkCmd.ExecuteScalarAsync();
+                            
+                            if (result == null || result == DBNull.Value)
+                            {
+                                lblQRDetails.Text = "❌ Hàng hóa không tồn tại trong kho.";
+                                return;
+                            }
+                            
+                            int slTon = Convert.ToInt32(result);
+                            if (slTon <= 0)
+                            {
+                                string message = slTon == 0 ? "đã được bán trước đó" : "không tồn tại trong kho";
+                                lblQRDetails.Text = $"❌ Hàng hóa {message}.";
+                                return;
+                            }
+                        }
+
                         // Lấy đơn giá bán từ nhóm hàng
                         var loaiVang = await DatabaseHelper.Lay_DonGiaBan_loaivang_TheoMa_hanghoaAsync(qrResult.Trim());
 
@@ -707,6 +736,13 @@ namespace MyLoginApp.Pages
 
                         // 👉 Hiển thị thành tiền đã cộng dồn
                         lblTongTien.Text = $"🧮 Tổng Thanh Toán: {ThanhToan:N0}đ";
+
+                        // Kiểm tra xem hàng hóa đã được quét trước đó chưa
+                        if (scannedItems.Any(item => item.Id == hangHoa.HangHoaID))
+                        {
+                            lblQRDetails.Text = $"❌ Hàng hóa {hangHoa.TenHangHoa} đã được quét trước đó.";
+                            return;
+                        }
 
                         // Thêm vào danh sách đã quét
                         AddScannedItemToList(hangHoa, TongTien);

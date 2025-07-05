@@ -35,8 +35,6 @@
                        HorizontalOptions="Center"/>
             </Border>
 
-
-
             <Button x:Name="btnChonKhachHang"
                     Text="👤 Chọn khách hàng"
                     Clicked="OnChonKhachHangClicked"
@@ -61,7 +59,7 @@
                             BackgroundColor="#4682B4"
                             TextColor="White"/>
 
-                    <Label x:Name="lblHoac" Text="Hoặc" TextColor="White" HorizontalOptions="Center" Margin="0,5,0,5"/>
+                    <Label x:Name="lblHoac" Text="Hoặc" TextColor="Black" HorizontalOptions="Center" Margin="0,5,0,5"/>
 
                     <!-- Nhập tên khách -->
                     <Border x:Name="frameNhapTenKhach" BackgroundColor="#2C2C2C" Stroke="LightGray" StrokeThickness="1" Padding="10">
@@ -69,7 +67,7 @@
                             <RoundRectangle CornerRadius="10" />
                         </Border.StrokeShape>
                         <VerticalStackLayout>
-                            <Label Text="👤 Nhập tên khách hàng" TextColor="White" FontSize="13" FontAttributes="Bold"/>
+                            <Label Text="👤 Nhập tên khách hàng" TextColor="Black" FontSize="13" FontAttributes="Bold"/>
                             <Entry x:Name="entryTenKhach"
                                    Placeholder="Nhập họ tên khách hàng"
                                    TextChanged="OnTenKhachHangChanged"
@@ -135,9 +133,9 @@
                             <RoundRectangle CornerRadius="15" />
                         </Border.StrokeShape>
                         <VerticalStackLayout>
-                            <Label Text="🪪 Thông tin CCCD đã quét" TextColor="White" FontSize="13" FontAttributes="Bold"/>
+                            <Label Text="🪪 Thông tin CCCD đã quét" TextColor="Black" FontSize="13" FontAttributes="Bold"/>
                             <Label x:Name="lblCCCDInfo"
-                                   TextColor="LightGreen"
+                                   TextColor="Black"
                                    FontSize="13"
                                    IsVisible="False" />
                             <Button x:Name="btnXacNhanCCCD"

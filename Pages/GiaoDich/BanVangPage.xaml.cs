@@ -119,7 +119,7 @@ namespace MyLoginApp.Pages
                 if (phieuXuatCreated)
                 {
                     // Tạo hóa đơn điện tử
-                   /* bool electronicInvoiceCreated = await CreateElectronicInvoiceAsync();
+                    /*bool electronicInvoiceCreated = await CreateElectronicInvoiceAsync();
 
                     if (electronicInvoiceCreated)
                     {
@@ -174,14 +174,14 @@ namespace MyLoginApp.Pages
                     var checkCmd = new MySqlCommand("SELECT SL_TON FROM ton_kho WHERE HANGHOAID = @HangHoaId", conn, transaction);
                     checkCmd.Parameters.AddWithValue("@HangHoaId", item.Id);
                     var result = await checkCmd.ExecuteScalarAsync();
-                    
+
                     if (result == null || result == DBNull.Value)
                     {
                         await DisplayAlert("❌ Không thể bán", $"Hàng hóa {item.Name} (mã: {item.Id}) không có trong tồn kho.", "OK");
                         await transaction.RollbackAsync();
                         return false;
                     }
-                    
+
                     int slTon = Convert.ToInt32(result);
                     if (slTon == 0)
                     {
@@ -614,20 +614,17 @@ namespace MyLoginApp.Pages
                     return null;
                 }
 
-                // Chuyển ảnh sang trắng đen (grayscale) trước khi decode
-                var grayBitmap = new SKBitmap(bitmap.Width, bitmap.Height, SKColorType.Gray8, SKAlphaType.Opaque);
-                for (int y = 0; y < bitmap.Height; y++)
+                // ✅ Resize ảnh nếu quá lớn để đảm bảo quét chính xác
+                const int maxWidth = 1024;
+                if (bitmap.Width > maxWidth)
                 {
-                    for (int x = 0; x < bitmap.Width; x++)
-                    {
-                        var color = bitmap.GetPixel(x, y);
-                        // Công thức chuyển sang grayscale
-                        byte gray = (byte)(0.299 * color.Red + 0.587 * color.Green + 0.114 * color.Blue);
-                        grayBitmap.SetPixel(x, y, new SKColor(gray, gray, gray));
-                    }
+                    float scale = (float)maxWidth / bitmap.Width;
+                    var resized = bitmap.Resize(
+                        new SKImageInfo((int)(bitmap.Width * scale), (int)(bitmap.Height * scale)),
+                        SKFilterQuality.High);
+                    bitmap.Dispose();
+                    bitmap = resized;
                 }
-                bitmap.Dispose();
-                bitmap = grayBitmap;
 
                 // ✅ Cấu hình BarcodeReader tối ưu
                 var reader = new BarcodeReader<SKBitmap>(bmp => new SKBitmapLuminanceSource(bmp))
@@ -638,14 +635,16 @@ namespace MyLoginApp.Pages
                         TryHarder = true,
                         PureBarcode = false,
                         PossibleFormats = new List<BarcodeFormat>
-                        {
-                            BarcodeFormat.QR_CODE
-                        }
+                {
+                    BarcodeFormat.QR_CODE,
+                    BarcodeFormat.CODE_128,
+                    BarcodeFormat.CODE_39,
+                    BarcodeFormat.CODABAR
+                }
                     }
                 };
 
-                // ✅ Decode QR trên background thread để tránh đơ UI
-                var result = await Task.Run(() => reader.Decode(bitmap));
+                var result = reader.Decode(bitmap);
                 if (result == null || string.IsNullOrWhiteSpace(result.Text))
                 {
                     await DisplayAlert("Thông báo", "Không tìm thấy mã. Vui lòng chụp mã rõ nét, chính diện và đủ sáng.", "OK");
@@ -655,6 +654,14 @@ namespace MyLoginApp.Pages
                 {
                     _audioPlayer.Play();
                 }
+
+                float sharpness = GetImageSharpness(bitmap);
+                if (sharpness < 5)
+                {
+                    await DisplayAlert("Ảnh mờ", "Ảnh chụp tem vàng bị mờ, vui lòng chụp lại cho rõ nét hơn!", "OK");
+                    return null;
+                }
+
                 return result.Text;
             }
             catch (Exception ex)
@@ -666,8 +673,11 @@ namespace MyLoginApp.Pages
 
         private async void OnChupVaQuetQRClicked(object sender, EventArgs e)
         {
-            loadingQuetVang.IsVisible = true;
-            loadingQuetVang.IsRunning = true;
+            if (khachHangDaChon == null)
+            {
+                await DisplayAlert("Chưa chọn khách hàng", "Vui lòng chọn khách hàng trước khi quét tem vàng!", "OK");
+                return;
+            }
             try
             {
                 var qrResult = await ChupVaQuetQRAsync();
@@ -675,10 +685,8 @@ namespace MyLoginApp.Pages
                 {
                     maVangQuetDuoc = qrResult; // 🔥 GÁN vào biến toàn cục để sau dùng
                     lblResult.Text = $"📌 Kết quả: {qrResult}";
-                    lblResult.IsVisible = true;
                     lblQRDetails.Text = $"📦 Mã: {qrResult} - Đang kiểm tra thông tin...";
                     frameQRDetails.IsVisible = true;
-                    lblTongTien.IsVisible = true;
 
                     try
                     {
@@ -698,13 +706,13 @@ namespace MyLoginApp.Pages
                             var checkCmd = new MySqlCommand("SELECT SL_TON FROM ton_kho WHERE HANGHOAID = @HangHoaId", conn);
                             checkCmd.Parameters.AddWithValue("@HangHoaId", qrResult.Trim());
                             var result = await checkCmd.ExecuteScalarAsync();
-                            
+
                             if (result == null || result == DBNull.Value)
                             {
                                 lblQRDetails.Text = "❌ Hàng hóa không tồn tại trong kho.";
                                 return;
                             }
-                            
+
                             int slTon = Convert.ToInt32(result);
                             if (slTon <= 0)
                             {
@@ -767,11 +775,6 @@ namespace MyLoginApp.Pages
             {
                 await DisplayAlert("Lỗi", $"Lỗi khi quét mã QR: {ex.Message}", "OK");
             }
-            finally
-            {
-                loadingQuetVang.IsVisible = false;
-                loadingQuetVang.IsRunning = false;
-            }
         }
 
         private async void OnResetClicked(object sender, EventArgs e)
@@ -794,12 +797,10 @@ namespace MyLoginApp.Pages
                 // Reset giao diện
                 lblKhachHangDaChon.IsVisible = false;
                 lblResult.Text = "📌 Kết quả:";
-                lblResult.IsVisible = false;
                 lblQRDetails.Text = "";
                 frameQRDetails.IsVisible = false;
                 frameScannedItems.IsVisible = false;
                 lblTongTien.Text = "🧮 Thành tiền: 0đ";
-                lblTongTien.IsVisible = false;
                 frameNhapTenKhach.IsVisible = false;
                 frameThemKhach.IsVisible = false;
                 frameQuetCCCD.IsVisible = false; // Ẩn khung quét CCCD khi reset
@@ -905,24 +906,22 @@ namespace MyLoginApp.Pages
 
         private async void OnQuetCCCDClicked(object sender, EventArgs e)
         {
-            loadingQuetCCCD.IsVisible = true;
-            loadingQuetCCCD.IsRunning = true;
+            frameCustomerSelectionArea.IsVisible = true; // Hiển thị khung lựa chọn khách hàng chính
+            frameNhapTenKhach.IsVisible = false; // Ẩn khung nhập tên khách hàng
+            frameThemKhach.IsVisible = false;
+            lblKhachHangDaChon.IsVisible = false;
+            btnXacNhanKhach.IsVisible = false;
+            frameQuetCCCD.IsVisible = true; // Hiển thị khung quét CCCD
+            lblCCCDInfo.IsVisible = false;
+            btnXacNhanCCCD.IsVisible = false;
+            lblHoac.IsVisible = false; // Ẩn nhãn "Hoặc"
+            if (btnQuetCCCD != null)
+            {
+                btnQuetCCCD.IsVisible = false; // Ẩn nút "Quét CCCD" sau khi nhấn
+            }
+
             try
             {
-                frameCustomerSelectionArea.IsVisible = true; // Hiển thị khung lựa chọn khách hàng chính
-                frameNhapTenKhach.IsVisible = false; // Ẩn khung nhập tên khách hàng
-                frameThemKhach.IsVisible = false;
-                lblKhachHangDaChon.IsVisible = false;
-                btnXacNhanKhach.IsVisible = false;
-                frameQuetCCCD.IsVisible = true; // Hiển thị khung quét CCCD
-                lblCCCDInfo.IsVisible = false;
-                btnXacNhanCCCD.IsVisible = false;
-                lblHoac.IsVisible = false; // Ẩn nhãn "Hoặc"
-                if (btnQuetCCCD != null)
-                {
-                    btnQuetCCCD.IsVisible = false; // Ẩn nút "Quét CCCD" sau khi nhấn
-                }
-
                 // Tái sử dụng logic chụp và quét QR từ phương thức hiện có
                 var cccdResult = await ChupVaQuetQRAsync();
                 if (!string.IsNullOrEmpty(cccdResult))
@@ -991,11 +990,6 @@ namespace MyLoginApp.Pages
                 lblCCCDInfo.Text = "Đã xảy ra lỗi khi quét CCCD.";
                 lblCCCDInfo.IsVisible = true; // Đảm bảo thông báo hiển thị
                 btnXacNhanCCCD.IsVisible = false; // Ẩn nút xác nhận khi có lỗi
-            }
-            finally
-            {
-                loadingQuetCCCD.IsVisible = false;
-                loadingQuetCCCD.IsRunning = false;
             }
         }
 
@@ -1096,6 +1090,26 @@ namespace MyLoginApp.Pages
                 System.Diagnostics.Debug.WriteLine($"Lỗi tạo hóa đơn điện tử: {ex.Message}");
                 return false;
             }
+        }
+
+        // Đánh giá độ sắc nét bằng phương pháp Laplacian (SkiaSharp)
+        float GetImageSharpness(SKBitmap bitmap)
+        {
+            float sharpness = 0;
+            for (int y = 1; y < bitmap.Height - 1; y++)
+            {
+                for (int x = 1; x < bitmap.Width - 1; x++)
+                {
+                    var c = bitmap.GetPixel(x, y).Red;
+                    var cx1 = bitmap.GetPixel(x - 1, y).Red;
+                    var cx2 = bitmap.GetPixel(x + 1, y).Red;
+                    var cy1 = bitmap.GetPixel(x, y - 1).Red;
+                    var cy2 = bitmap.GetPixel(x, y + 1).Red;
+                    float laplacian = Math.Abs(4 * c - cx1 - cx2 - cy1 - cy2);
+                    sharpness += laplacian;
+                }
+            }
+            return sharpness / (bitmap.Width * bitmap.Height);
         }
     }
 }

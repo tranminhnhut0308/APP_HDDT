@@ -44,7 +44,7 @@
             <!-- Bao gồm cả nhập tên và quét CCCD -->
             <Border x:Name="frameCustomerSelectionArea"
                     BackgroundColor="#1E1E1E"
-                    Stroke="White"
+                    Stroke="Black"
                     StrokeThickness="1"
                     Padding="15"
                     IsVisible="False">
@@ -91,7 +91,7 @@
                     <!-- Thêm khách mới -->
                     <Border x:Name="frameThemKhach"
                             BackgroundColor="#1E1E1E"
-                            Stroke="White"
+                            Stroke="Black"
                             StrokeThickness="1"
                             Padding="15"
                             IsVisible="False">

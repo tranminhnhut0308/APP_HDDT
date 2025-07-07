@@ -598,9 +598,15 @@ namespace MyLoginApp.Pages
         {
             try
             {
+                loadingQuetVang.IsVisible = true;
+                loadingQuetVang.IsRunning = true;
                 var photo = await MediaPicker.CapturePhotoAsync();
                 if (photo == null)
+                {
+                    loadingQuetVang.IsVisible = false;
+                    loadingQuetVang.IsRunning = false;
                     return null;
+                }
 
                 using var stream = await photo.OpenReadAsync();
                 using var memoryStream = new MemoryStream();
@@ -611,11 +617,13 @@ namespace MyLoginApp.Pages
                 if (bitmap == null)
                 {
                     await DisplayAlert("Lỗi", "Không thể đọc ảnh vừa chụp.", "OK");
+                    loadingQuetVang.IsVisible = false;
+                    loadingQuetVang.IsRunning = false;
                     return null;
                 }
 
-                // ✅ Resize ảnh nếu quá lớn để đảm bảo quét chính xác
-                const int maxWidth = 1024;
+                // Resize nếu cần
+                const int maxWidth = 800;
                 if (bitmap.Width > maxWidth)
                 {
                     float scale = (float)maxWidth / bitmap.Width;
@@ -625,6 +633,20 @@ namespace MyLoginApp.Pages
                     bitmap.Dispose();
                     bitmap = resized;
                 }
+
+                // Chuyển sang grayscale
+                var grayBitmap = new SKBitmap(bitmap.Width, bitmap.Height, SKColorType.Gray8, SKAlphaType.Opaque);
+                for (int y = 0; y < bitmap.Height; y++)
+                {
+                    for (int x = 0; x < bitmap.Width; x++)
+                    {
+                        var color = bitmap.GetPixel(x, y);
+                        byte gray = (byte)(0.299 * color.Red + 0.587 * color.Green + 0.114 * color.Blue);
+                        grayBitmap.SetPixel(x, y, new SKColor(gray, gray, gray));
+                    }
+                }
+                bitmap.Dispose();
+                bitmap = grayBitmap;
 
                 // ✅ Cấu hình BarcodeReader tối ưu
                 var reader = new BarcodeReader<SKBitmap>(bmp => new SKBitmapLuminanceSource(bmp))
@@ -648,6 +670,8 @@ namespace MyLoginApp.Pages
                 if (result == null || string.IsNullOrWhiteSpace(result.Text))
                 {
                     await DisplayAlert("Thông báo", "Không tìm thấy mã. Vui lòng chụp mã rõ nét, chính diện và đủ sáng.", "OK");
+                    loadingQuetVang.IsVisible = false;
+                    loadingQuetVang.IsRunning = false;
                     return null;
                 }
                 if (_audioPlayer != null)
@@ -659,13 +683,19 @@ namespace MyLoginApp.Pages
                 if (sharpness < 5)
                 {
                     await DisplayAlert("Ảnh mờ", "Ảnh chụp tem vàng bị mờ, vui lòng chụp lại cho rõ nét hơn!", "OK");
+                    loadingQuetVang.IsVisible = false;
+                    loadingQuetVang.IsRunning = false;
                     return null;
                 }
 
+                loadingQuetVang.IsVisible = false;
+                loadingQuetVang.IsRunning = false;
                 return result.Text;
             }
             catch (Exception ex)
             {
+                loadingQuetVang.IsVisible = false;
+                loadingQuetVang.IsRunning = false;
                 await Microsoft.Maui.Controls.Application.Current.MainPage.DisplayAlert("Lỗi", $"Có lỗi khi quét mã: {ex.Message}", "OK");
                 return null;
             }
@@ -678,6 +708,8 @@ namespace MyLoginApp.Pages
                 await DisplayAlert("Chưa chọn khách hàng", "Vui lòng chọn khách hàng trước khi quét tem vàng!", "OK");
                 return;
             }
+            loadingQuetVang.IsVisible = true;
+            loadingQuetVang.IsRunning = true;
             try
             {
                 var qrResult = await ChupVaQuetQRAsync();
@@ -771,9 +803,10 @@ namespace MyLoginApp.Pages
                     await DisplayAlert("QR Code", "Không tìm thấy mã QR trong ảnh.", "OK");
                 }
             }
-            catch (Exception ex)
+            finally
             {
-                await DisplayAlert("Lỗi", $"Lỗi khi quét mã QR: {ex.Message}", "OK");
+                loadingQuetVang.IsVisible = false;
+                loadingQuetVang.IsRunning = false;
             }
         }
 

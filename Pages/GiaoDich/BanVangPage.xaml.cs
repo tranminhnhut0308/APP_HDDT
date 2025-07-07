@@ -58,6 +58,10 @@ namespace MyLoginApp.Pages
         // Danh sách lưu trữ các mặt hàng đã quét
         private List<ScannedItem> scannedItems = new List<ScannedItem>();
 
+        // 1. Thêm thuộc tính để kiểm soát lấy nét và flash
+        private DateTime _lastAutoFocusTime = DateTime.MinValue;
+        private const int AutoFocusIntervalMs = 1200; // Chỉ lấy nét lại sau mỗi 1.2 giây nếu chưa quét được mã
+
         public BanVangPage()
         {
             InitializeComponent();
@@ -587,8 +591,26 @@ namespace MyLoginApp.Pages
         protected override async void OnDisappearing()
         {
             base.OnDisappearing();
-            if (isCameraOn)
+            try
             {
+                if (isCameraOn)
+                {
+                    await StopCamera();
+                }
+                if (cameraView != null)
+                {
+                    cameraView.BarcodesDetected -= OnBarcodesDetected;
+                }
+                if (_cancelTokenSource != null && !_cancelTokenSource.IsCancellationRequested)
+                {
+                    _cancelTokenSource.Cancel();
+                    _cancelTokenSource.Dispose();
+                    _cancelTokenSource = null;
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"❌ Lỗi OnDisappearing: {ex.Message}");
             }
         }
 
@@ -1110,6 +1132,40 @@ namespace MyLoginApp.Pages
                 }
             }
             return sharpness / (bitmap.Width * bitmap.Height);
+        }
+
+        private async void OnBarcodesDetected(object sender, BarcodeDetectionEventArgs e)
+        {
+            try
+            {
+                if (isProcessingBarcode) return;
+                if ((DateTime.Now - _lastAutoFocusTime).TotalMilliseconds < AutoFocusIntervalMs)
+                    return;
+                isProcessingBarcode = true;
+                _lastAutoFocusTime = DateTime.Now;
+
+                await MainThread.InvokeOnMainThreadAsync(async () =>
+                {
+                    if (cameraView == null || !cameraView.IsDetecting) return;
+                    if (e.Results?.Length > 0)
+                    {
+                        var barcode = e.Results.FirstOrDefault();
+                        if (barcode != null && !string.IsNullOrWhiteSpace(barcode.Value))
+                        {
+                            // ... xử lý như cũ ...
+                        }
+                    }
+                });
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"❌ Lỗi OnBarcodesDetected: {ex.Message}");
+                await DisplayAlert("Lỗi", $"Lỗi khi quét mã: {ex.Message}", "OK");
+            }
+            finally
+            {
+                isProcessingBarcode = false;
+            }
         }
     }
 }

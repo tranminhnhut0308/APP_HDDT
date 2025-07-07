@@ -635,16 +635,14 @@ namespace MyLoginApp.Pages
                         TryHarder = true,
                         PureBarcode = false,
                         PossibleFormats = new List<BarcodeFormat>
-                {
-                    BarcodeFormat.QR_CODE,
-                    BarcodeFormat.CODE_128,
-                    BarcodeFormat.CODE_39,
-                    BarcodeFormat.CODABAR
-                }
+                        {
+                            BarcodeFormat.QR_CODE
+                        }
                     }
                 };
 
-                var result = reader.Decode(bitmap);
+                // ✅ Decode QR trên background thread để tránh đơ UI
+                var result = await Task.Run(() => reader.Decode(bitmap));
                 if (result == null || string.IsNullOrWhiteSpace(result.Text))
                 {
                     await DisplayAlert("Thông báo", "Không tìm thấy mã. Vui lòng chụp mã rõ nét, chính diện và đủ sáng.", "OK");

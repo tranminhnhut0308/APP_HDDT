@@ -111,21 +111,18 @@ namespace MyLoginApp.Pages
         // 👉 Sự kiện nút Login
         private async void OnLoginClicked(object sender, EventArgs e)
         {
-            // ✅ Kiểm tra đã kết nối chưa
-            if (!isConnectedToDatabase)
-            {
-                await Snackbar.Make("⚠️ Bạn chưa kết nối CSDL. Vui lòng nhấn nút 'Kết Nối' trước khi đăng nhập!", duration: TimeSpan.FromSeconds(3), visualOptions: new SnackbarOptions { BackgroundColor = Colors.OrangeRed }).Show();
-                return;
-            }
-
+            loginOverlay.IsVisible = true;
             try
             {
-                // hoàn thiện sẽ mở đăng nhập tay
+                // ✅ Kiểm tra đã kết nối chưa
+                if (!isConnectedToDatabase)
+                {
+                    await Snackbar.Make("⚠️ Bạn chưa kết nối CSDL. Vui lòng nhấn nút 'Kết Nối' trước khi đăng nhập!", duration: TimeSpan.FromSeconds(3), visualOptions: new SnackbarOptions { BackgroundColor = Colors.OrangeRed }).Show();
+                    return;
+                }
+
                 string username = usernameEntry.Text?.Trim();
                 string password = passwordEntry.Text?.Trim();
-
-                
-
 
                 if (string.IsNullOrWhiteSpace(username) || string.IsNullOrWhiteSpace(password))
                 {
@@ -133,15 +130,11 @@ namespace MyLoginApp.Pages
                     return;
                 }
 
-                // ✅ Kiểm tra đăng nhập
                 if (await CheckLoginAsync(username, password))
                 {
                     await Snackbar.Make($"🎉 Đăng nhập thành công: {username}", duration: TimeSpan.FromSeconds(3)).Show();
-
-                    // Lưu tên đăng nhập và mật khẩu
                     await SecureStorage.SetAsync("username", username);
                     await SecureStorage.SetAsync("password", password);
-
                     await Shell.Current.GoToAsync("//MainMenuPage");
                 }
                 else
@@ -152,6 +145,10 @@ namespace MyLoginApp.Pages
             catch (Exception ex)
             {
                 await Snackbar.Make($"Lỗi hệ thống: {ex.Message}", duration: TimeSpan.FromSeconds(3), visualOptions: new SnackbarOptions { BackgroundColor = Colors.Red }).Show();
+            }
+            finally
+            {
+                loginOverlay.IsVisible = false;
             }
         }
 

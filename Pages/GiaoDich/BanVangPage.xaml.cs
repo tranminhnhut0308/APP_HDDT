@@ -119,7 +119,7 @@ namespace MyLoginApp.Pages
                 if (phieuXuatCreated)
                 {
                     // Tạo hóa đơn điện tử
-                    bool electronicInvoiceCreated = await CreateElectronicInvoiceAsync();
+                   /* bool electronicInvoiceCreated = await CreateElectronicInvoiceAsync();
 
                     if (electronicInvoiceCreated)
                     {
@@ -128,7 +128,7 @@ namespace MyLoginApp.Pages
                     else
                     {
                         await DisplayAlert("Cảnh báo", "⚠️ Hóa đơn điện tử tạo thất bại, nhưng phiếu xuất đã được lưu.", "OK");
-                    }
+                    }*/
 
                     // Chuyển sang trang HoaDonPage để xem chi tiết hóa đơn
                     await Navigation.PushAsync(new HoaDonPage(khachHangDaChon, scannedItems, ThanhToan));
@@ -665,6 +665,8 @@ namespace MyLoginApp.Pages
 
         private async void OnChupVaQuetQRClicked(object sender, EventArgs e)
         {
+            loadingQuetVang.IsVisible = true;
+            loadingQuetVang.IsRunning = true;
             try
             {
                 var qrResult = await ChupVaQuetQRAsync();
@@ -672,8 +674,10 @@ namespace MyLoginApp.Pages
                 {
                     maVangQuetDuoc = qrResult; // 🔥 GÁN vào biến toàn cục để sau dùng
                     lblResult.Text = $"📌 Kết quả: {qrResult}";
+                    lblResult.IsVisible = true;
                     lblQRDetails.Text = $"📦 Mã: {qrResult} - Đang kiểm tra thông tin...";
                     frameQRDetails.IsVisible = true;
+                    lblTongTien.IsVisible = true;
 
                     try
                     {
@@ -762,6 +766,11 @@ namespace MyLoginApp.Pages
             {
                 await DisplayAlert("Lỗi", $"Lỗi khi quét mã QR: {ex.Message}", "OK");
             }
+            finally
+            {
+                loadingQuetVang.IsVisible = false;
+                loadingQuetVang.IsRunning = false;
+            }
         }
 
         private async void OnResetClicked(object sender, EventArgs e)
@@ -784,10 +793,12 @@ namespace MyLoginApp.Pages
                 // Reset giao diện
                 lblKhachHangDaChon.IsVisible = false;
                 lblResult.Text = "📌 Kết quả:";
+                lblResult.IsVisible = false;
                 lblQRDetails.Text = "";
                 frameQRDetails.IsVisible = false;
                 frameScannedItems.IsVisible = false;
                 lblTongTien.Text = "🧮 Thành tiền: 0đ";
+                lblTongTien.IsVisible = false;
                 frameNhapTenKhach.IsVisible = false;
                 frameThemKhach.IsVisible = false;
                 frameQuetCCCD.IsVisible = false; // Ẩn khung quét CCCD khi reset
@@ -893,22 +904,24 @@ namespace MyLoginApp.Pages
 
         private async void OnQuetCCCDClicked(object sender, EventArgs e)
         {
-            frameCustomerSelectionArea.IsVisible = true; // Hiển thị khung lựa chọn khách hàng chính
-            frameNhapTenKhach.IsVisible = false; // Ẩn khung nhập tên khách hàng
-            frameThemKhach.IsVisible = false;
-            lblKhachHangDaChon.IsVisible = false;
-            btnXacNhanKhach.IsVisible = false;
-            frameQuetCCCD.IsVisible = true; // Hiển thị khung quét CCCD
-            lblCCCDInfo.IsVisible = false;
-            btnXacNhanCCCD.IsVisible = false;
-            lblHoac.IsVisible = false; // Ẩn nhãn "Hoặc"
-            if (btnQuetCCCD != null)
-            {
-                btnQuetCCCD.IsVisible = false; // Ẩn nút "Quét CCCD" sau khi nhấn
-            }
-
+            loadingQuetCCCD.IsVisible = true;
+            loadingQuetCCCD.IsRunning = true;
             try
             {
+                frameCustomerSelectionArea.IsVisible = true; // Hiển thị khung lựa chọn khách hàng chính
+                frameNhapTenKhach.IsVisible = false; // Ẩn khung nhập tên khách hàng
+                frameThemKhach.IsVisible = false;
+                lblKhachHangDaChon.IsVisible = false;
+                btnXacNhanKhach.IsVisible = false;
+                frameQuetCCCD.IsVisible = true; // Hiển thị khung quét CCCD
+                lblCCCDInfo.IsVisible = false;
+                btnXacNhanCCCD.IsVisible = false;
+                lblHoac.IsVisible = false; // Ẩn nhãn "Hoặc"
+                if (btnQuetCCCD != null)
+                {
+                    btnQuetCCCD.IsVisible = false; // Ẩn nút "Quét CCCD" sau khi nhấn
+                }
+
                 // Tái sử dụng logic chụp và quét QR từ phương thức hiện có
                 var cccdResult = await ChupVaQuetQRAsync();
                 if (!string.IsNullOrEmpty(cccdResult))
@@ -977,6 +990,11 @@ namespace MyLoginApp.Pages
                 lblCCCDInfo.Text = "Đã xảy ra lỗi khi quét CCCD.";
                 lblCCCDInfo.IsVisible = true; // Đảm bảo thông báo hiển thị
                 btnXacNhanCCCD.IsVisible = false; // Ẩn nút xác nhận khi có lỗi
+            }
+            finally
+            {
+                loadingQuetCCCD.IsVisible = false;
+                loadingQuetCCCD.IsRunning = false;
             }
         }
 

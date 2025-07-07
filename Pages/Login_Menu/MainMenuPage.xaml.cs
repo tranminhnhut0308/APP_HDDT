@@ -13,6 +13,27 @@ namespace MyLoginApp.Pages
         public MainMenuPage()
         {
             InitializeComponent();
+            LoadAccountInfo();
+        }
+
+        private async void LoadAccountInfo()
+        {
+            try
+            {
+                var username = await Microsoft.Maui.Storage.SecureStorage.GetAsync("username");
+                if (!string.IsNullOrEmpty(username))
+                {
+                    lblAccountInfo.Text = $"👤 {username}";
+                }
+                else
+                {
+                    lblAccountInfo.Text = "👤";
+                }
+            }
+            catch
+            {
+                lblAccountInfo.Text = "👤";
+            }
         }
 
         // Biến điều khiển hiển thị SubMenu

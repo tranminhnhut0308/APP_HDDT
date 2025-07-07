@@ -133,6 +133,15 @@
                             <RoundRectangle CornerRadius="15" />
                         </Border.StrokeShape>
                         <VerticalStackLayout>
+                            <!-- Loading khi quét CCCD -->
+                            <ActivityIndicator x:Name="loadingQuetCCCD"
+                                               IsVisible="False"
+                                               IsRunning="False"
+                                               Color="#FFD700"
+                                               HorizontalOptions="Center"
+                                               Margin="0,0,0,5"
+                                               HeightRequest="30"
+                                               WidthRequest="30" />
                             <Label Text="🪪 Thông tin CCCD đã quét" TextColor="Black" FontSize="13" FontAttributes="Bold"/>
                             <Label x:Name="lblCCCDInfo"
                                    TextColor="Black"
@@ -163,13 +172,23 @@
             Clicked="OnChupVaQuetQRClicked"
             BackgroundColor="Blue"
             TextColor="White"/>
+            <!-- Loading khi quét tem vàng -->
+            <ActivityIndicator x:Name="loadingQuetVang"
+                               IsVisible="False"
+                               IsRunning="False"
+                               Color="#FFD700"
+                               HorizontalOptions="Center"
+                               Margin="0,5,0,10"
+                               HeightRequest="36"
+                               WidthRequest="36" />
 
             <Label x:Name="lblResult"
                    Text="📌 Kết quả: Chưa có"
                    FontSize="14"
                    TextColor="Black"
                    FontAttributes="Bold"
-                   HorizontalOptions="Center"/>
+                   HorizontalOptions="Center"
+                   IsVisible="False"/>
 
             <!-- Thông tin vàng -->
             <Border x:Name="frameQRDetails"
@@ -196,7 +215,8 @@
                        Text="🧮 Thành tiền: 0đ"
                        FontSize="15"
                        TextColor="Black"
-                       HorizontalOptions="Center"/>
+                       HorizontalOptions="Center"
+                       IsVisible="False"/>
             </VerticalStackLayout>
 
             <!-- Danh sách các mã đã quét -->

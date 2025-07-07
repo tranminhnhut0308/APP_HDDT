@@ -614,17 +614,20 @@ namespace MyLoginApp.Pages
                     return null;
                 }
 
-                // ✅ Resize ảnh nếu quá lớn để đảm bảo quét chính xác
-                const int maxWidth = 1024;
-                if (bitmap.Width > maxWidth)
+                // Chuyển ảnh sang trắng đen (grayscale) trước khi decode
+                var grayBitmap = new SKBitmap(bitmap.Width, bitmap.Height, SKColorType.Gray8, SKAlphaType.Opaque);
+                for (int y = 0; y < bitmap.Height; y++)
                 {
-                    float scale = (float)maxWidth / bitmap.Width;
-                    var resized = bitmap.Resize(
-                        new SKImageInfo((int)(bitmap.Width * scale), (int)(bitmap.Height * scale)),
-                        SKFilterQuality.High);
-                    bitmap.Dispose();
-                    bitmap = resized;
+                    for (int x = 0; x < bitmap.Width; x++)
+                    {
+                        var color = bitmap.GetPixel(x, y);
+                        // Công thức chuyển sang grayscale
+                        byte gray = (byte)(0.299 * color.Red + 0.587 * color.Green + 0.114 * color.Blue);
+                        grayBitmap.SetPixel(x, y, new SKColor(gray, gray, gray));
+                    }
                 }
+                bitmap.Dispose();
+                bitmap = grayBitmap;
 
                 // ✅ Cấu hình BarcodeReader tối ưu
                 var reader = new BarcodeReader<SKBitmap>(bmp => new SKBitmapLuminanceSource(bmp))

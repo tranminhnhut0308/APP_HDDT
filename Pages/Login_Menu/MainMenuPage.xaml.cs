@@ -21,18 +21,11 @@ namespace MyLoginApp.Pages
             try
             {
                 var username = await Microsoft.Maui.Storage.SecureStorage.GetAsync("username");
-                if (!string.IsNullOrEmpty(username))
-                {
-                    lblAccountInfo.Text = $"👤 {username}";
-                }
-                else
-                {
-                    lblAccountInfo.Text = "👤";
-                }
+                lblAccountInfo.Text = username;
             }
             catch
             {
-                lblAccountInfo.Text = "👤";
+                lblAccountInfo.Text = "";
             }
         }
 

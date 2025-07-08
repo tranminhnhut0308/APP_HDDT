@@ -197,23 +197,40 @@
             </CollectionView>
 
             <!-- Pagination Buttons -->
-            <Grid ColumnDefinitions="*,*" 
-                  Margin="0,10,0,10" 
-                  ColumnSpacing="10">
+            <Grid ColumnDefinitions="Auto,*,Auto" Margin="0,10,0,10" ColumnSpacing="10" HorizontalOptions="Center">
                 <Button Grid.Column="0"
-                        Text="← Trang trước" 
+                        Text="◀"
                         Command="{Binding GoPreviousPageCommand}"
                         IsEnabled="{Binding CanGoPrevious}"
                         BackgroundColor="#4A5BF6"
                         TextColor="White"
-                        CornerRadius="5"/>
-                <Button Grid.Column="1"
-                        Text="Trang sau →" 
+                        CornerRadius="20"
+                        WidthRequest="80"
+                        HeightRequest="36"/>
+                <Label Grid.Column="1"
+                       HorizontalOptions="Center"
+                       VerticalOptions="Center"
+                       FontSize="16"
+                       TextColor="#333"
+                       FontAttributes="Bold">
+                    <Label.FormattedText>
+                        <FormattedString>
+                            <Span Text="Trang "/>
+                            <Span Text="{Binding CurrentPage}"/>
+                            <Span Text="/"/>
+                            <Span Text="{Binding TotalPages}"/>
+                        </FormattedString>
+                    </Label.FormattedText>
+                </Label>
+                <Button Grid.Column="2"
+                        Text="▶"
                         Command="{Binding GoNextPageCommand}"
                         IsEnabled="{Binding CanGoNext}"
                         BackgroundColor="#4A5BF6"
                         TextColor="White"
-                        CornerRadius="5"/>
+                        CornerRadius="20"
+                        WidthRequest="80"
+                        HeightRequest="36"/>
             </Grid>
 
             <!-- Loading indicator -->

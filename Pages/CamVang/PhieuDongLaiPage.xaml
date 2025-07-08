@@ -15,7 +15,7 @@
                    HasShadow="True"
                    BorderColor="#cccccc">
                 <SearchBar 
-                    Placeholder="🔍 Tìm kiếm theo mã phiếu hoặc tên khách hàng"
+                    Placeholder="Tìm kiếm theo mã phiếu hoặc tên khách hàng"
                     TextChanged="OnSearchTextChanged"
                     Text="{Binding SearchKeyword}"
                     BackgroundColor="#f0f0f0"
@@ -88,14 +88,41 @@
             </CollectionView>
 
             <!-- Phân trang -->
-            <HorizontalStackLayout HorizontalOptions="Center" Spacing="30" Margin="0,20,0,10">
-                <Button Text="Trước" 
-                        Command="{Binding GoPreviousPageCommand}" 
-                        IsEnabled="{Binding CanGoPrevious}" />
-                <Button Text="Sau" 
-                        Command="{Binding GoNextPageCommand}" 
-                        IsEnabled="{Binding CanGoNext}" />
-            </HorizontalStackLayout>
+            <Grid ColumnDefinitions="Auto,*,Auto" Margin="0,20,0,10" ColumnSpacing="10" HorizontalOptions="Center">
+                <Button Grid.Column="0"
+                        Text="◀"
+                        Command="{Binding GoPreviousPageCommand}"
+                        IsEnabled="{Binding CanGoPrevious}"
+                        BackgroundColor="#4A5BF6"
+                        TextColor="White"
+                        CornerRadius="20"
+                        WidthRequest="80"
+                        HeightRequest="36"/>
+                <Label Grid.Column="1"
+                       HorizontalOptions="Center"
+                       VerticalOptions="Center"
+                       FontSize="16"
+                       TextColor="#333"
+                       FontAttributes="Bold">
+                    <Label.FormattedText>
+                        <FormattedString>
+                            <Span Text="Trang "/>
+                            <Span Text="{Binding CurrentPage}"/>
+                            <Span Text="/"/>
+                            <Span Text="{Binding TotalPages}"/>
+                        </FormattedString>
+                    </Label.FormattedText>
+                </Label>
+                <Button Grid.Column="2"
+                        Text="▶"
+                        Command="{Binding GoNextPageCommand}"
+                        IsEnabled="{Binding CanGoNext}"
+                        BackgroundColor="#4A5BF6"
+                        TextColor="White"
+                        CornerRadius="20"
+                        WidthRequest="80"
+                        HeightRequest="36"/>
+            </Grid>
 
         </VerticalStackLayout>
     </ScrollView>

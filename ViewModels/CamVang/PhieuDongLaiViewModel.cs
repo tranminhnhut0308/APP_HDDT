@@ -43,6 +43,13 @@ public class PhieuDongLaiViewModel : ObservableObject
         }
     }
 
+    private int _totalPages = 1;
+    public int TotalPages
+    {
+        get => _totalPages;
+        set { SetProperty(ref _totalPages, value); OnPropertyChanged(nameof(TotalPages)); }
+    }
+
     public bool CanGoPrevious => CurrentPage > 1;
     public bool CanGoNext => DanhSachPhieuDongLai.Count >= PageSize;
 
@@ -77,6 +84,23 @@ public class PhieuDongLaiViewModel : ObservableObject
             {
                 await Shell.Current.DisplayAlert("Lỗi", "Không thể kết nối database", "OK");
                 return;
+            }
+
+            // Lấy tổng số bản ghi để tính tổng số trang
+            string countQuery = @"SELECT COUNT(*) FROM cam_nhan_tien_them INNER JOIN cam_phieu_cam_vang ON cam_phieu_cam_vang.PHIEU_CAM_VANG_ID = cam_nhan_tien_them.PHIEU_CAM_ID INNER JOIN phx_khach_hang ON phx_khach_hang.KH_ID = cam_phieu_cam_vang.KH_ID WHERE 1 = 1";
+            if (!string.IsNullOrEmpty(SearchKeyword))
+            {
+                countQuery += " AND (phx_khach_hang.KH_TEN LIKE @Search OR cam_phieu_cam_vang.PHIEU_MA LIKE @Search OR cam_nhan_tien_them.PHIEU_MA LIKE @Search)";
+            }
+            using (var countCmd = new MySqlCommand(countQuery, conn))
+            {
+                if (!string.IsNullOrEmpty(SearchKeyword))
+                {
+                    countCmd.Parameters.AddWithValue("@Search", $"%{SearchKeyword}%");
+                }
+                var totalRecords = Convert.ToInt32(await countCmd.ExecuteScalarAsync());
+                TotalPages = (int)Math.Ceiling((double)totalRecords / PageSize);
+                if (CurrentPage > TotalPages) CurrentPage = TotalPages == 0 ? 1 : TotalPages;
             }
 
             string query = @"

@@ -48,15 +48,15 @@
                             <RoundRectangle CornerRadius="10" />
                         </Border.StrokeShape>
                         <VerticalStackLayout>
-                            <Label Text="👤 Nhập tên khách hàng" TextColor="White" FontSize="13" FontAttributes="Bold"/>
+                            <Label Text="👤 Nhập tên khách hàng" TextColor="Black" FontSize="13" FontAttributes="Bold"/>
                             <Entry x:Name="entryTenKhach"
                                    Placeholder="Nhập họ tên khách hàng"
                                    TextChanged="OnTenKhachHangChanged"
-                                   TextColor="White"
+                                   TextColor="Red"
                                    FontSize="13"
                                    PlaceholderColor="Gray"/>
                             <Label x:Name="lblThongTinKH"
-                                   TextColor="LightGreen"
+                                   TextColor="Black"
                                    FontSize="13"
                                    IsVisible="False" />
                         </VerticalStackLayout>
@@ -69,7 +69,7 @@
                             TextColor="White"
                             IsVisible="False"/>
 
-                    <Label x:Name="lblHoac" Text="Hoặc" TextColor="White" HorizontalOptions="Center" Margin="0,5,0,5"/>
+                    <Label x:Name="lblHoac" Text="Hoặc" TextColor="Black" HorizontalOptions="Center" Margin="0,5,0,5"/>
 
                     <!-- Nút Quét CCCD mới -->
                     <Button x:Name="btnQuetCCCD"
@@ -130,7 +130,7 @@
                                    FontAttributes="Bold"
                                    IsVisible="False"/>
                             <Label x:Name="lblCCCDInfo"
-                                   TextColor="LightGreen"
+                                   TextColor="Black"
                                    FontSize="13"
                                    IsVisible="False"
                                    Margin="0,10,0,0"/>
@@ -179,7 +179,7 @@
                            Placeholder="Nhập cân tổng " 
                            TextColor="Black" 
                            PlaceholderColor="Gray"
-                           Text="{Binding CanTong, Mode=TwoWay, Converter={StaticResource DoubleToStringConverter}}"/>
+                           Text="{Binding CanTong, Mode=TwoWay}"/>
 
                     <Label Text="💎 TL Hột" TextColor="Black"/>
                     <Entry x:Name="entryTLHot" 
@@ -187,7 +187,7 @@
                            Placeholder="Nhập TL hột " 
                            TextColor="Black" 
                            PlaceholderColor="Gray"
-                           Text="{Binding TlHot, Mode=TwoWay, Converter={StaticResource DoubleToStringConverter}}"/>
+                           Text="{Binding TlHot, Mode=TwoWay}"/>
 
                     <Label Text="➖ Trừ hột" TextColor="Black"/>
                     <Entry x:Name="entryTruHot" 

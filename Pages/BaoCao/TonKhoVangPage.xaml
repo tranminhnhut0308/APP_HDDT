@@ -31,35 +31,35 @@
             <Frame BackgroundColor="White" CornerRadius="16" Padding="18" Margin="10,10,10,0" HasShadow="True">
                 <Grid ColumnDefinitions="*,*" RowDefinitions="Auto,Auto,Auto,Auto,Auto" RowSpacing="12" ColumnSpacing="24">
                     <VerticalStackLayout Grid.Column="0" Grid.Row="0" Spacing="2">
-                        <Label Text="Tổng số phiếu" TextColor="#888" FontSize="12"/>
+                        <Label Text="Tổng số phiếu" TextColor="#888" FontSize="14"/>
                         <Label Text="{Binding TongSoNhom}" TextColor="#1976D2" FontSize="16" FontAttributes="Bold"/>
                     </VerticalStackLayout>
                     <VerticalStackLayout Grid.Column="1" Grid.Row="0" Spacing="2">
-                        <Label Text="Tổng cân tổng" TextColor="#888" FontSize="12"/>
+                        <Label Text="Tổng cân tổng" TextColor="#888" FontSize="14"/>
                         <Label Text="{Binding TongCanTongFormatted}" TextColor="#222" FontSize="16" FontAttributes="Bold"/>
                     </VerticalStackLayout>
                     <VerticalStackLayout Grid.Column="0" Grid.Row="1" Spacing="2">
-                        <Label Text="Tổng TL hột" TextColor="#888" FontSize="12"/>
+                        <Label Text="Tổng TL hột" TextColor="#888" FontSize="14"/>
                         <Label Text="{Binding TongTLHotFormatted}" TextColor="#222" FontSize="16" FontAttributes="Bold"/>
                     </VerticalStackLayout>
                     <VerticalStackLayout Grid.Column="1" Grid.Row="1" Spacing="2">
-                        <Label Text="Tổng TL thực" TextColor="#888" FontSize="12"/>
+                        <Label Text="Tổng TL thực" TextColor="#888" FontSize="14"/>
                         <Label Text="{Binding TongTLThucFormatted}" TextColor="#222" FontSize="16" FontAttributes="Bold"/>
                     </VerticalStackLayout>
                     <VerticalStackLayout Grid.Column="0" Grid.Row="2" Spacing="2">
-                        <Label Text="Tổng công gốc" TextColor="#888" FontSize="12"/>
+                        <Label Text="Tổng công gốc" TextColor="#888" FontSize="14"/>
                         <Label Text="{Binding TongCongGoc, StringFormat='{0:N0} VNĐ'}" TextColor="#FF9800" FontSize="16" FontAttributes="Bold"/>
                     </VerticalStackLayout>
                     <VerticalStackLayout Grid.Column="1" Grid.Row="2" Spacing="2">
-                        <Label Text="Tổng giá công" TextColor="#888" FontSize="12"/>
+                        <Label Text="Tổng giá công" TextColor="#888" FontSize="14"/>
                         <Label Text="{Binding TongGiaCong, StringFormat='{0:N0} VNĐ'}" TextColor="#388E3C" FontSize="16" FontAttributes="Bold"/>
                     </VerticalStackLayout>
                     <VerticalStackLayout Grid.Column="0" Grid.Row="3" Spacing="2">
-                        <Label Text="Tổng số lượng tồn" TextColor="#888" FontSize="12"/>
+                        <Label Text="Tổng số lượng tồn" TextColor="#888" FontSize="14"/>
                         <Label Text="{Binding TongSoLuongTon, StringFormat='{0:N0} cái'}" TextColor="#E53935" FontSize="16" FontAttributes="Bold"/>
                     </VerticalStackLayout>
                     <VerticalStackLayout Grid.Column="1" Grid.Row="3" Spacing="2">
-                        <Label Text="Tổng thành tiền" TextColor="#888" FontSize="12"/>
+                        <Label Text="Tổng thành tiền" TextColor="#888" FontSize="14"/>
                         <Label Text="{Binding TongThanhTien, StringFormat='{0:N0} VNĐ'}" TextColor="#388E3C" FontSize="16" FontAttributes="Bold"/>
                     </VerticalStackLayout>
                 </Grid>
@@ -133,22 +133,41 @@
             </CollectionView>
 
             <!-- Phân trang -->
-            <HorizontalStackLayout HorizontalOptions="Center" Spacing="30" Margin="0,20,0,10">
-                <Button Text="Trước"
+            <Grid ColumnDefinitions="Auto,*,Auto" Margin="0,20,0,10" ColumnSpacing="10" HorizontalOptions="Center">
+                <Button Grid.Column="0"
+                        Text="◀"
                         Command="{Binding TrangTruocCommand}"
                         IsEnabled="{Binding CoTrangTruoc}"
                         BackgroundColor="#FF8C00"
                         TextColor="White"
                         CornerRadius="20"
-                        WidthRequest="100" />
-                <Button Text="Sau"
+                        WidthRequest="80"
+                        HeightRequest="36"/>
+                <Label Grid.Column="1"
+                       HorizontalOptions="Center"
+                       VerticalOptions="Center"
+                       FontSize="16"
+                       TextColor="#333"
+                       FontAttributes="Bold">
+                    <Label.FormattedText>
+                        <FormattedString>
+                            <Span Text="Trang "/>
+                            <Span Text="{Binding TrangHienTai}"/>
+                            <Span Text="/"/>
+                            <Span Text="{Binding TongSoTrang}"/>
+                        </FormattedString>
+                    </Label.FormattedText>
+                </Label>
+                <Button Grid.Column="2"
+                        Text="▶"
                         Command="{Binding TrangSauCommand}"
                         IsEnabled="{Binding CoTrangSau}"
                         BackgroundColor="#FF8C00"
                         TextColor="White"
                         CornerRadius="20"
-                        WidthRequest="100" />
-            </HorizontalStackLayout>
+                        WidthRequest="80"
+                        HeightRequest="36"/>
+            </Grid>
 
         </VerticalStackLayout>
     </ScrollView>

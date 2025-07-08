@@ -250,48 +250,40 @@
         </ScrollView>
 
         <!-- KHU VỰC PHÂN TRANG - ĐẶT Ở DƯỚI CÙNG -->
-        <Frame Grid.Row="3" 
-               BackgroundColor="White" 
-               BorderColor="#FF9800" 
-               CornerRadius="10" 
-               Padding="10" 
-               Margin="0,10,0,0"
-               HasShadow="True">
-            <HorizontalStackLayout HorizontalOptions="Center" Spacing="15">
-                <Button Text="⏮️" 
-                        Command="{Binding PreviousPageCommand}"
-                        IsEnabled="{Binding CanGoPrevious}"
-                        BackgroundColor="#FF9800"
-                        TextColor="White"
-                        WidthRequest="50"
-                        HeightRequest="40"
-                        CornerRadius="20"/>
-
-                <Label Text="{Binding CurrentPage, StringFormat='Trang {0}'}"
-                       VerticalOptions="Center"
-                       FontSize="16"/>
-
-                <Label Text="{Binding TotalPages, StringFormat='/ {0}'}"
-                       VerticalOptions="Center"
-                       FontSize="16"/>
-
-                <Button Text="⏭️"
-                        Command="{Binding NextPageCommand}"
-                        IsEnabled="{Binding CanGoNext}"
-                        BackgroundColor="#FF9800"
-                        TextColor="White"
-                        WidthRequest="50"
-                        HeightRequest="40"
-                        CornerRadius="20"/>
-
-                <Button Text="🔄"
-                        Command="{Binding RefreshCommand}"
-                        BackgroundColor="#FF9800"
-                        TextColor="White"
-                        WidthRequest="50"
-                        HeightRequest="40"
-                        CornerRadius="20"/>
-            </HorizontalStackLayout>
-        </Frame>
+        <Grid Grid.Row="3" ColumnDefinitions="Auto,*,Auto" Margin="0,10,0,0" ColumnSpacing="10" HorizontalOptions="Center">
+            <Button Grid.Column="0"
+                    Text="◀"
+                    Command="{Binding GoPreviousPageCommand}"
+                    IsEnabled="{Binding CanGoPrevious}"
+                    BackgroundColor="#007AFF"
+                    TextColor="White"
+                    CornerRadius="20"
+                    WidthRequest="80"
+                    HeightRequest="36"/>
+            <Label Grid.Column="1"
+                   HorizontalOptions="Center"
+                   VerticalOptions="Center"
+                   FontSize="16"
+                   TextColor="#333"
+                   FontAttributes="Bold">
+                <Label.FormattedText>
+                    <FormattedString>
+                        <Span Text="Trang "/>
+                        <Span Text="{Binding CurrentPage}"/>
+                        <Span Text="/"/>
+                        <Span Text="{Binding TotalPages}"/>
+                    </FormattedString>
+                </Label.FormattedText>
+            </Label>
+            <Button Grid.Column="2"
+                    Text="▶"
+                    Command="{Binding GoNextPageCommand}"
+                    IsEnabled="{Binding CanGoNext}"
+                    BackgroundColor="#007AFF"
+                    TextColor="White"
+                    CornerRadius="20"
+                    WidthRequest="80"
+                    HeightRequest="36"/>
+        </Grid>
     </Grid>
 </ContentPage>

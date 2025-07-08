@@ -140,6 +140,25 @@ namespace MyLoginApp.ViewModels.BaoCao
         public string TongTLHotFormatted => $"{TongTLHot / 1000} L";
         public string TongTLThucFormatted => $"{TongTLThuc / 1000} L";
 
+        private int _trangHienTai = 1;
+        public int TrangHienTai
+        {
+            get => _trangHienTai;
+            set { _trangHienTai = value; OnPropertyChanged(); }
+        }
+        private int _tongSoTrang = 1;
+        public int TongSoTrang
+        {
+            get => _tongSoTrang;
+            set { _tongSoTrang = value; OnPropertyChanged(); }
+        }
+        private int _pageSize = 10;
+        public int PageSize
+        {
+            get => _pageSize;
+            set { _pageSize = value; OnPropertyChanged(); }
+        }
+
         public TonKhoVangViewModel()
         {
             _danhSachTonKhoVang = new ObservableCollection<TonKhoVangModel>();
@@ -216,6 +235,11 @@ namespace MyLoginApp.ViewModels.BaoCao
                     TongGiaCong = DanhSachTonKhoVang.Sum(x => x.GIA_CONG);
                     TongSoLuongTon = DanhSachTonKhoVang.Sum(x => x.SL_TON);
                     TongThanhTien = DanhSachHienThi.Sum(x => x.ThanhTien);
+
+                    // Phân trang
+                    TongSoTrang = (int)Math.Ceiling((double)DanhSachHienThi.Count / PageSize);
+                    if (TongSoTrang == 0) TongSoTrang = 1;
+                    TrangHienTai = 1;
                 }
                 else
                 {

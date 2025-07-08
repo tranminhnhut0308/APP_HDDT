@@ -1,15 +1,9 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using Microsoft.Maui.Controls;
 using MyLoginApp.Helpers;
-using MyLoginApp.Models;
 using MyLoginApp.Models.BaoCao;
 using MySqlConnector;
-using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace MyLoginApp.ViewModels.BaoCao
 {
@@ -24,11 +18,23 @@ namespace MyLoginApp.ViewModels.BaoCao
         [ObservableProperty]
         private int pageSize = 5; // Mỗi trang sẽ hiển thị tối đa 5 phiếu
 
-        [ObservableProperty]
-        private int currentPage = 1; // Trang hiện tại
-
-        [ObservableProperty]
+        private int _currentPage = 1; // Trang hiện tại
+        public int CurrentPage
+        {
+            get => _currentPage;
+            set
+            {
+                if (SetProperty(ref _currentPage, value))
+                {
+                    OnPropertyChanged(nameof(CurrentPage));
+                    OnPropertyChanged(nameof(CanGoNext));
+                    OnPropertyChanged(nameof(CanGoPrevious));
+                }
+            }
+        }
+        
         private int _totalPages = 1; // Tổng số trang
+        public int TotalPages => _totalPages;
 
         private int _tongSoPhieu;
         public int TongSoPhieu
@@ -224,17 +230,22 @@ namespace MyLoginApp.ViewModels.BaoCao
                 TongGiaGocAll = allPhieuXuat.Sum(x => x.GiaGoc);
                 TongLaiLoAll = allPhieuXuat.Sum(x => x.LaiLo);
 
-                // 3. Hiển thị trang hiện tại
-                DanhSachPhieuXuat.Clear();
-                foreach (var item in allPhieuXuat.Skip((CurrentPage - 1) * PageSize).Take(PageSize))
-                {
-                    DanhSachPhieuXuat.Add(item);
-                }
+                // Sau khi allPhieuXuat đã có dữ liệu
+                TongSoPhieu = allPhieuXuat.Count;
+                _totalPages = (int)Math.Ceiling((double)TongSoPhieu / PageSize);
+                OnPropertyChanged(nameof(TotalPages));
+                if (CurrentPage > _totalPages) CurrentPage = _totalPages == 0 ? 1 : _totalPages;
 
+                var pageData = allPhieuXuat
+                    .Skip((CurrentPage - 1) * PageSize)
+                    .Take(PageSize)
+                    .ToList();
+
+                DanhSachPhieuXuat = new ObservableCollection<PhieuXuatModel>(pageData);
+
+                OnPropertyChanged(nameof(CurrentPage));
                 OnPropertyChanged(nameof(CanGoNext));
                 OnPropertyChanged(nameof(CanGoPrevious));
-
-                TongSoPhieu = allPhieuXuat.Count;
             }
             catch (Exception ex)
             {

@@ -26,6 +26,13 @@ namespace MyLoginApp.ViewModels
         [ObservableProperty]
         private string searchKeyword = string.Empty;
 
+        private int _totalPages = 1;
+        public int TotalPages
+        {
+            get => _totalPages;
+            set { SetProperty(ref _totalPages, value); OnPropertyChanged(nameof(TotalPages)); }
+        }
+
         partial void OnSearchKeywordChanged(string value)
         {
             CurrentPage = 1;
@@ -82,6 +89,23 @@ namespace MyLoginApp.ViewModels
                 {
                     await Shell.Current.DisplayAlert("Lỗi", "Không thể kết nối database", "OK");
                     return;
+                }
+
+                // Lấy tổng số bản ghi để tính tổng số trang
+                string countQuery = @"SELECT COUNT(*) FROM cam_phieu_cam_vang INNER JOIN cam_chi_tiet_phieu_cam_vang ON cam_phieu_cam_vang.PHIEU_CAM_VANG_ID = cam_chi_tiet_phieu_cam_vang.PHIEU_CAM_VANG_ID INNER JOIN phx_khach_hang ON phx_khach_hang.KH_ID = cam_phieu_cam_vang.KH_ID WHERE cam_phieu_cam_vang.DA_THANH_TOAN IS NULL AND cam_phieu_cam_vang.THANH_LY IS NULL AND DATE(cam_phieu_cam_vang.DEN_NGAY) <= CURDATE()";
+                if (!string.IsNullOrWhiteSpace(SearchKeyword))
+                {
+                    countQuery += " AND (phx_khach_hang.KH_TEN LIKE @Search OR cam_phieu_cam_vang.PHIEU_MA LIKE @Search)";
+                }
+                using (var countCmd = new MySqlCommand(countQuery, conn))
+                {
+                    if (!string.IsNullOrWhiteSpace(SearchKeyword))
+                    {
+                        countCmd.Parameters.AddWithValue("@Search", $"%{SearchKeyword}%");
+                    }
+                    var totalRecords = Convert.ToInt32(await countCmd.ExecuteScalarAsync());
+                    TotalPages = (int)Math.Ceiling((double)totalRecords / PageSize);
+                    if (CurrentPage > TotalPages) CurrentPage = TotalPages == 0 ? 1 : TotalPages;
                 }
 
                 string query = @"

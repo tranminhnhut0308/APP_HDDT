@@ -97,22 +97,41 @@
             </CollectionView>
 
             <!-- Phân trang -->
-            <HorizontalStackLayout HorizontalOptions="Center" Spacing="30" Margin="0,20,0,10">
-                <Button Text="Trước"
+            <Grid ColumnDefinitions="Auto,*,Auto" Margin="0,20,0,10" ColumnSpacing="10" HorizontalOptions="Center">
+                <Button Grid.Column="0"
+                        Text="◀"
                         Command="{Binding GoPreviousPageCommand}"
                         IsEnabled="{Binding CanGoPrevious}"
                         BackgroundColor="#FF8C00"
                         TextColor="White"
                         CornerRadius="20"
-                        WidthRequest="100" />
-                <Button Text="Sau"
+                        WidthRequest="80"
+                        HeightRequest="36"/>
+                <Label Grid.Column="1"
+                       HorizontalOptions="Center"
+                       VerticalOptions="Center"
+                       FontSize="16"
+                       TextColor="#333"
+                       FontAttributes="Bold">
+                    <Label.FormattedText>
+                        <FormattedString>
+                            <Span Text="Trang "/>
+                            <Span Text="{Binding CurrentPage}"/>
+                            <Span Text="/"/>
+                            <Span Text="{Binding TotalPages}"/>
+                        </FormattedString>
+                    </Label.FormattedText>
+                </Label>
+                <Button Grid.Column="2"
+                        Text="▶"
                         Command="{Binding GoNextPageCommand}"
                         IsEnabled="{Binding CanGoNext}"
                         BackgroundColor="#FF8C00"
                         TextColor="White"
                         CornerRadius="20"
-                        WidthRequest="100" />
-            </HorizontalStackLayout>
+                        WidthRequest="80"
+                        HeightRequest="36"/>
+            </Grid>
 
         </VerticalStackLayout>
     </ScrollView>

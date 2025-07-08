@@ -24,6 +24,12 @@ namespace MyLoginApp.ViewModels
 
         private int _currentPage = 1;
         private const int PageSize = 10;
+        private int _totalPages = 1;
+        public int TotalPages
+        {
+            get => _totalPages;
+            set { SetProperty(ref _totalPages, value); OnPropertyChanged(nameof(TotalPages)); }
+        }
 
         public int CurrentPage
         {
@@ -78,6 +84,23 @@ namespace MyLoginApp.ViewModels
                 {
                     await Shell.Current.DisplayAlert("Lỗi", "Không thể kết nối database", "OK");
                     return;
+                }
+
+                // Lấy tổng số bản ghi để tính tổng số trang
+                string countQuery = @"SELECT COUNT(*) FROM cam_kho_vang_cam WHERE 1 = 1";
+                if (!string.IsNullOrWhiteSpace(search))
+                {
+                    countQuery += " AND (Ten_KH LIKE @Search OR PHIEU_MA LIKE @Search OR TEN_HANG_HOA LIKE @Search OR LOAI_VANG LIKE @Search)";
+                }
+                using (var countCmd = new MySqlCommand(countQuery, conn))
+                {
+                    if (!string.IsNullOrWhiteSpace(search))
+                    {
+                        countCmd.Parameters.AddWithValue("@Search", $"%{search}%");
+                    }
+                    var totalRecords = Convert.ToInt32(await countCmd.ExecuteScalarAsync());
+                    TotalPages = (int)Math.Ceiling((double)totalRecords / PageSize);
+                    if (CurrentPage > TotalPages) CurrentPage = TotalPages == 0 ? 1 : TotalPages;
                 }
 
                 string query = @"

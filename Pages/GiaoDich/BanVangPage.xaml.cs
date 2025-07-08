@@ -725,7 +725,7 @@ namespace MyLoginApp.Pages
                 var result = reader.Decode(bitmap);
                 if (result == null || string.IsNullOrWhiteSpace(result.Text))
                 {
-                    await DisplayAlert("Thông báo", "Không tìm thấy mã. Vui lòng chụp mã rõ nét, chính diện và đủ sáng.", "OK");
+                    lblQRDetails.Text = "❌ Không tìm thấy mã QR trong ảnh. Vui lòng chụp mã rõ nét, chính diện và đủ sáng.";
                     return null;
                 }
                 if (_audioPlayer != null)
@@ -842,7 +842,7 @@ namespace MyLoginApp.Pages
                 }
                 else
                 {
-                    await DisplayAlert("QR Code", "Không tìm thấy mã QR trong ảnh.", "OK");
+                    lblQRDetails.Text = "Không tìm thấy mã QR trong ảnh.";
                 }
             }
             catch (Exception ex)

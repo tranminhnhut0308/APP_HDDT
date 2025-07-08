@@ -1,53 +1,113 @@
-# Các lỗi đã sửa trong BanVangPage
+# Bổ sung tích hợp Hóa đơn điện tử cho BanVangPage
 
-## ✅ Lỗi đã được khắc phục:
+## Tổng quan
+Đã bổ sung thành công tích hợp hóa đơn điện tử vào trang BanVangPage. Khi người dùng nhấn nút "Thanh toán", hệ thống sẽ:
+1. Tạo phiếu xuất trong database
+2. Tự động tạo hóa đơn điện tử qua API hoadon30s.vn
+3. Hiển thị thông báo thành công/thất bại
 
-### 1. **Lỗi "btnQuetCCCD does not exist in the current context"**
-- **Nguyên nhân**: Code cố gắng truy cập control `btnQuetCCCD` trước khi nó được khởi tạo
-- **Giải pháp**: Thêm null check cho tất cả các chỗ sử dụng `btnQuetCCCD`
-- **Vị trí sửa**:
-  - `OnChonKhachHangClicked()` - dòng 318
-  - `OnTenKhachHangChanged()` - dòng 345, 351
-  - `OnQuetCCCDClicked()` - dòng 845
+## Các file đã thêm/sửa đổi
 
-### 2. **Lỗi namespace cho KhachHang**
-- **Nguyên nhân**: Thiếu using statement cho `MyLoginApp.Models.DanhMuc.KhachHang`
-- **Giải pháp**: Thêm `using KhachHang = MyLoginApp.Models.DanhMuc.KhachHang;`
+### 1. Services (Mới)
+- `Services/IBanVangPageFactory.cs` - Interface factory cho BanVangPage
+- `Services/BanVangPageFactory.cs` - Implementation factory
+- `Services/BanVangPageRouteHandler.cs` - Custom route handler
 
-### 3. **Lỗi namespace cho HangHoaModel**
-- **Nguyên nhân**: Thiếu using statement cho `MyLoginApp.Models.HangHoaModel`
-- **Giải pháp**: Thêm `using HangHoaModel = MyLoginApp.Models.HangHoaModel;`
+### 2. Pages (Sửa đổi)
+- `Pages/GiaoDich/BanVangPage.xaml.cs` - Thêm tích hợp hóa đơn điện tử
 
-### 4. **Lỗi namespace cho HoaDonPage**
-- **Nguyên nhân**: Thiếu using statement cho `MyLoginApp.Views.HoaDonPage`
-- **Giải pháp**: Thêm `using HoaDonPage = MyLoginApp.Views.HoaDonPage;`
+### 3. Configuration (Sửa đổi)
+- `MauiProgram.cs` - Đăng ký services và dependency injection
+- `AppShell.xaml.cs` - Cập nhật route handler
 
-## 🔧 Các thay đổi cụ thể:
+## Cách hoạt động
 
-### Trong `Pages/GiaoDich/BanVangPage.xaml.cs`:
+### 1. Dependency Injection
+- `IElectronicInvoiceService` được đăng ký như singleton
+- `BanVangPage` được tạo thông qua factory pattern
+- Custom route handler đảm bảo DI hoạt động với Shell navigation
 
+### 2. Quy trình thanh toán
 ```csharp
-// Thêm các using statements
-using KhachHang = MyLoginApp.Models.DanhMuc.KhachHang;
-using HangHoaModel = MyLoginApp.Models.HangHoaModel;
-using HoaDonPage = MyLoginApp.Views.HoaDonPage;
+// Trong OnThanhToanClicked
+bool phieuXuatCreated = await TaoPhieuXuat(khachHangDaChon.MaKH, scannedItems);
 
-// Thêm null checks cho btnQuetCCCD
-if (btnQuetCCCD != null)
+if (phieuXuatCreated)
 {
-    btnQuetCCCD.IsVisible = true/false;
+    // Tạo hóa đơn điện tử
+    bool electronicInvoiceCreated = await CreateElectronicInvoiceAsync();
+
+    if (electronicInvoiceCreated)
+    {
+        await DisplayAlert("Thành công", "✅ Hóa đơn điện tử đã được tạo thành công!", "OK");
+    }
+    else
+    {
+        await DisplayAlert("Cảnh báo", "⚠️ Hóa đơn điện tử tạo thất bại, nhưng phiếu xuất đã được lưu.", "OK");
+    }
 }
 ```
 
-## ✅ Kết quả:
-- Tất cả lỗi compile đã được sửa
-- Chỉ còn lại warnings về nullability (không ảnh hưởng đến chức năng)
-- Ứng dụng có thể build và chạy bình thường
-- Tích hợp hóa đơn điện tử hoạt động đúng
+### 3. Cấu trúc dữ liệu hóa đơn
+- **Mặt hàng vàng**: Đơn vị "Chỉ", giá trị = trọng lượng/100
+- **Tiền công**: Đơn vị "Cái", tách riêng cho từng mặt hàng
+- **Thuế**: Mặc định 0% cho vàng, 10% cho tiền công
+- **Tổng tiền**: Bao gồm cả tiền công
 
-## 🧪 Kiểm tra:
-1. Build project: `dotnet build` ✅
-2. Không có lỗi compile ✅
-3. Chỉ có warnings về nullability (bình thường) ✅
-4. Tất cả controls được khởi tạo đúng cách ✅
-5. Namespace được resolve đúng ✅ 
+## API Configuration
+- **Base URL**: https://cpanel.hoadon30s.vn
+- **Client ID**: 2b12baad-c037-46a3-b953-2629fc759032
+- **Client Secret**: d9845a8ee363d447ef704a9d61f0076b02ffb151
+- **Scope**: create-invoice
+
+## Xử lý lỗi
+- Kiểm tra kết nối API trước khi gửi request
+- Xử lý lỗi authentication
+- Thông báo rõ ràng cho người dùng
+- Phiếu xuất vẫn được lưu ngay cả khi hóa đơn điện tử thất bại
+
+## Testing
+1. Chạy ứng dụng
+2. Đi đến trang Bán Vàng
+3. Chọn khách hàng
+4. Quét mã vàng
+5. Nhấn "Thanh toán"
+6. Kiểm tra thông báo hóa đơn điện tử
+
+## Lưu ý
+- Cần có kết nối internet để tạo hóa đơn điện tử
+- Thông tin khách hàng phải đầy đủ (tên, địa chỉ, số điện thoại)
+- Hóa đơn điện tử được tạo tự động, không cần xác nhận thêm
+- Package Newtonsoft.Json đã có sẵn trong project
+
+## Các thay đổi chính trong BanVangPage.xaml.cs
+
+### 1. Thêm imports và dependency injection
+```csharp
+using MyLoginApp.Services;
+
+private readonly IElectronicInvoiceService _electronicInvoiceService;
+
+public BanVangPage(IElectronicInvoiceService electronicInvoiceService)
+{
+    InitializeComponent();
+    _electronicInvoiceService = electronicInvoiceService;
+}
+```
+
+### 2. Thêm phương thức tạo hóa đơn điện tử
+```csharp
+private async Task<bool> CreateElectronicInvoiceAsync()
+{
+    // Chuẩn bị danh sách mặt hàng
+    // Gọi service tạo hóa đơn điện tử
+    // Xử lý kết quả
+}
+```
+
+### 3. Tích hợp vào quy trình thanh toán
+```csharp
+// Sau khi tạo phiếu xuất thành công
+bool electronicInvoiceCreated = await CreateElectronicInvoiceAsync();
+// Hiển thị thông báo kết quả
+``` 

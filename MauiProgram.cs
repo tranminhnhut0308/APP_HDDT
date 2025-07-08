@@ -43,6 +43,7 @@ public static class MauiProgram
 
         // Đăng ký Services
         builder.Services.AddSingleton<IElectronicInvoiceService, ElectronicInvoiceService>();
+        builder.Services.AddSingleton<IBanVangPageFactory, BanVangPageFactory>();
         builder.Services.AddSingleton<AppShell>();
 
         var app = builder.Build();

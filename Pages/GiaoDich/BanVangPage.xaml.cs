@@ -20,6 +20,7 @@ using Microsoft.Maui.Controls;
 using Microsoft.Maui.Graphics;
 using System.Text;
 using MyLoginApp.Services;
+using MauiColors = Microsoft.Maui.Graphics.Colors;
 
 namespace MyLoginApp.Pages
 {
@@ -124,7 +125,7 @@ namespace MyLoginApp.Pages
                 if (phieuXuatCreated)
                 {
                     // Tạo hóa đơn điện tử
-                    bool electronicInvoiceCreated = await CreateElectronicInvoiceAsync();
+                    /*bool electronicInvoiceCreated = await CreateElectronicInvoiceAsync();
 
                     if (electronicInvoiceCreated)
                     {
@@ -133,7 +134,7 @@ namespace MyLoginApp.Pages
                     else
                     {
                         await DisplayAlert("Cảnh báo", "⚠️ Hóa đơn điện tử tạo thất bại, nhưng phiếu xuất đã được lưu.", "OK");
-                    }
+                    }*/
 
                     // Chuyển sang trang HoaDonPage để xem chi tiết hóa đơn
                     await Navigation.PushAsync(new HoaDonPage(khachHangDaChon, scannedItems, ThanhToan));
@@ -759,7 +760,14 @@ namespace MyLoginApp.Pages
 
                         if (hangHoa == null)
                         {
-                            lblQRDetails.Text = "❌ Không tìm thấy thông tin hàng hóa.";
+                            lblQRDetails.FormattedText = new FormattedString
+                            {
+                                Spans = {
+                                    new Span { Text = "❌ Không tìm thấy ", TextColor = MauiColors.Black },
+                                    new Span { Text = qrResult, TextColor = MauiColors.Red, FontAttributes = FontAttributes.Bold },
+                                    new Span { Text = " trong danh sách hàng hóa.", TextColor = MauiColors.Black }
+                                }
+                            };
                             return;
                         }
 

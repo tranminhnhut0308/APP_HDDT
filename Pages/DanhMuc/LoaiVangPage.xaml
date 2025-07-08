@@ -174,7 +174,7 @@
 
                
 
-                <CollectionView ItemsSource="{Binding ListLoaiVang}"
+                <CollectionView ItemsSource="{Binding PagedLoaiVang}"
                 SelectionMode="Single"
                 SelectedItem="{Binding SelectedLoaiVang, Mode=TwoWay}"
                 IsVisible="{Binding IsShowingList}">

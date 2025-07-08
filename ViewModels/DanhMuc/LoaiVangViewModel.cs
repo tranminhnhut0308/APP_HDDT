@@ -11,6 +11,7 @@ using System.Globalization;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Diagnostics;
+using System.Linq;
 
 namespace MyLoginApp.ViewModels
 {
@@ -83,6 +84,45 @@ namespace MyLoginApp.ViewModels
         public ICommand SaveEditCommand { get; }
         public ICommand DeleteCommand { get; }
         public ICommand SelectItemCommand { get; }
+
+        public bool CanGoNext => CurrentPage < TotalPages;
+        public bool CanGoPrevious => CurrentPage > 1;
+
+        public ICommand GoNextPageCommand => new Command(GoNextPage, () => CanGoNext);
+        public ICommand GoPreviousPageCommand => new Command(GoPreviousPage, () => CanGoPrevious);
+
+        private ObservableCollection<LoaiVangModel> _pagedLoaiVang = new();
+        public ObservableCollection<LoaiVangModel> PagedLoaiVang
+        {
+            get => _pagedLoaiVang;
+            set { SetProperty(ref _pagedLoaiVang, value); }
+        }
+
+        private void UpdatePagedLoaiVang()
+        {
+            var items = ListLoaiVang.Skip((CurrentPage - 1) * PageSize).Take(PageSize).ToList();
+            PagedLoaiVang = new ObservableCollection<LoaiVangModel>(items);
+            OnPropertyChanged(nameof(CanGoNext));
+            OnPropertyChanged(nameof(CanGoPrevious));
+        }
+
+        private void GoNextPage()
+        {
+            if (CanGoNext)
+            {
+                CurrentPage++;
+                UpdatePagedLoaiVang();
+            }
+        }
+
+        private void GoPreviousPage()
+        {
+            if (CanGoPrevious)
+            {
+                CurrentPage--;
+                UpdatePagedLoaiVang();
+            }
+        }
 
         // ===== Constructor =====
         public LoaiVangViewModel()
@@ -328,6 +368,12 @@ namespace MyLoginApp.ViewModels
                         continue;
                     }
                 }
+
+                // Phân trang
+                TotalPages = (int)Math.Ceiling((double)ListLoaiVang.Count / PageSize);
+                if (TotalPages == 0) TotalPages = 1;
+                CurrentPage = 1;
+                UpdatePagedLoaiVang();
             }
             catch (Exception ex)
             {
@@ -685,6 +731,25 @@ namespace MyLoginApp.ViewModels
             {
                 await Shell.Current.DisplayAlert("⚠️ Lỗi", $"Không thể xóa loại vàng: {ex.Message}", "OK");
             }
+        }
+
+        private int _currentPage = 1;
+        public int CurrentPage
+        {
+            get => _currentPage;
+            set { SetProperty(ref _currentPage, value); }
+        }
+        private int _totalPages = 1;
+        public int TotalPages
+        {
+            get => _totalPages;
+            set { SetProperty(ref _totalPages, value); }
+        }
+        private int _pageSize = 10;
+        public int PageSize
+        {
+            get => _pageSize;
+            set { SetProperty(ref _pageSize, value); }
         }
     }
 }

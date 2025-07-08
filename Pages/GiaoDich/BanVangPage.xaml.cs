@@ -745,6 +745,8 @@ namespace MyLoginApp.Pages
         {
             try
             {
+                lblQRDetails.Text = "Vui lòng đợi, đang xử lý...";
+                frameQRDetails.IsVisible = true;
                 var qrResult = await ChupVaQuetQRAsync();
                 if (!string.IsNullOrEmpty(qrResult))
                 {
@@ -991,6 +993,8 @@ namespace MyLoginApp.Pages
 
             try
             {
+                lblCCCDInfo.Text = "Vui lòng đợi, đang xử lý...";
+                lblCCCDInfo.IsVisible = true;
                 // Tái sử dụng logic chụp và quét QR từ phương thức hiện có
                 var cccdResult = await ChupVaQuetQRAsync();
                 if (!string.IsNullOrEmpty(cccdResult))

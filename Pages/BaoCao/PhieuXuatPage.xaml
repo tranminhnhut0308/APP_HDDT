@@ -39,6 +39,16 @@
 
     <ScrollView>
         <VerticalStackLayout Padding="10" Spacing="10">
+            <!-- Tìm kiếm mã phiếu xuất -->
+            <!--
+            <HorizontalStackLayout Spacing="8" Margin="0,0,0,0">
+                <Entry x:Name="entryMaPhieu" Placeholder="Nhập mã phiếu xuất..."
+                       WidthRequest="220"
+                       TextChanged="OnSearchTextChanged"/>
+                <Button Text="📷 Quét mã" Clicked="OnQuetMaClicked" />
+            </HorizontalStackLayout>
+            -->
+            
             <!-- Thống kê -->
             <Frame BackgroundColor="White" CornerRadius="16" Padding="18" Margin="0,5,0,14" HasShadow="True">
                 <Grid ColumnDefinitions="*,*" RowDefinitions="Auto,Auto,Auto,Auto" RowSpacing="12" ColumnSpacing="24">

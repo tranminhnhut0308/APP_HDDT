@@ -146,8 +146,16 @@ namespace MyLoginApp.Pages
                     viewModel.SearchKeyword = result;
                     // Thực hiện tìm kiếm
                     await viewModel.OnSearchTextChanged(result);
-                    // Ẩn thông báo không tìm thấy
-                    lblKhongTimThay.IsVisible = false;
+                    // Kiểm tra nếu không có phiếu nào thì hiển thị thông báo
+                    if (viewModel.DanhSachPhieuDangCam.Count == 0)
+                    {
+                        lblKhongTimThay.Text = $"❌ '{result}' không có trong danh sách";
+                        lblKhongTimThay.IsVisible = true;
+                    }
+                    else
+                    {
+                        lblKhongTimThay.IsVisible = false;
+                    }
                 }
 
                 // Ẩn loading sau khi tìm kiếm xong
@@ -184,8 +192,16 @@ namespace MyLoginApp.Pages
                     try
                     {
                         await viewModel.OnSearchTextChanged(searchText);
-                        // Ẩn thông báo không tìm thấy khi người dùng nhập lại
-                        lblKhongTimThay.IsVisible = false;
+                        // Kiểm tra nếu không có phiếu nào thì hiển thị thông báo
+                        if (viewModel.DanhSachPhieuDangCam.Count == 0)
+                        {
+                            lblKhongTimThay.Text = $"❌ '{searchText}' không có trong danh sách";
+                            lblKhongTimThay.IsVisible = true;
+                        }
+                        else
+                        {
+                            lblKhongTimThay.IsVisible = false;
+                        }
                     }
                     finally
                     {
@@ -219,7 +235,16 @@ namespace MyLoginApp.Pages
                         loadingGrid.IsVisible = true;
                         lblLoadingText.Text = $"Đang tìm kiếm phiếu với mã: {result}";
                         await viewModel.OnSearchTextChanged(result);
-                        lblKhongTimThay.IsVisible = false;
+                        // Kiểm tra nếu không có phiếu nào thì hiển thị thông báo
+                        if (viewModel.DanhSachPhieuDangCam.Count == 0)
+                        {
+                            lblKhongTimThay.Text = $"❌ '{result}' không có trong danh sách";
+                            lblKhongTimThay.IsVisible = true;
+                        }
+                        else
+                        {
+                            lblKhongTimThay.IsVisible = false;
+                        }
                         loadingGrid.IsVisible = false;
                     }
                 }

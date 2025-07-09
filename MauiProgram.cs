@@ -42,7 +42,7 @@ public static class MauiProgram
         builder.Services.AddSingleton<PhieuXuatPage>();
 
         // Đăng ký Services
-        builder.Services.AddSingleton<IElectronicInvoiceService, ElectronicInvoiceService>();
+        builder.Services.AddSingleton<IElectronicInvoiceService, Setting_HDDT>();
         builder.Services.AddSingleton<IBanVangPageFactory, BanVangPageFactory>();
         builder.Services.AddSingleton<AppShell>();
 

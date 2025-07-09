@@ -2,17 +2,20 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using Newtonsoft.Json;
 using System.Text;
+using System.Collections.Generic;
+using System;
+using System.Threading.Tasks;
 
 namespace MyLoginApp.Services
 {
-    public class ElectronicInvoiceService : IElectronicInvoiceService
+    public class Setting_HDDT : IElectronicInvoiceService
     {
         private readonly HttpClient _httpClient;
         private const string BaseUrl = "https://cpanel.hoadon30s.vn";
         private const string ClientId = "2b12baad-c037-46a3-b953-2629fc759032";
         private const string ClientSecret = "d9845a8ee363d447ef704a9d61f0076b02ffb151";
 
-        public ElectronicInvoiceService()
+        public Setting_HDDT()
         {
             _httpClient = new HttpClient();
         }

@@ -90,17 +90,17 @@
                             <RoundRectangle CornerRadius="15" />
                         </Border.StrokeShape>
                         <VerticalStackLayout>
-                            <Label Text="📞 Nhập số điện thoại" TextColor="White" FontSize="13" FontAttributes="Bold"/>
+                            <Label Text="📞 Nhập số điện thoại" TextColor="Red" FontSize="13" FontAttributes="Bold"/>
                             <Entry x:Name="entrySoDienThoai"
                                    Placeholder="Nhập số điện thoại"
                                    FontSize="13"
                                    TextColor="White" PlaceholderColor="Gray"/>
-                            <Label Text="🏠 Địa chỉ" TextColor="White" FontSize="13" FontAttributes="Bold"/>
+                            <Label Text="🏠 Địa chỉ" TextColor="Red" FontSize="13" FontAttributes="Bold"/>
                             <Entry x:Name="entryDiaChi"
                                    Placeholder="Nhập địa chỉ"
                                    FontSize="13"
                                    TextColor="White" PlaceholderColor="Gray"/>
-                            <Label Text="🪪 CCCD" TextColor="White" FontSize="13" FontAttributes="Bold"/>
+                            <Label Text="🪪 CCCD" TextColor="Red" FontSize="13" FontAttributes="Bold"/>
                             <Entry x:Name="entryCCCD"
                                    Placeholder="Nhập số CCCD"
                                    FontSize="13"

@@ -71,11 +71,11 @@
                             <Entry x:Name="entryTenKhach"
                                    Placeholder="Nhập họ tên khách hàng"
                                    TextChanged="OnTenKhachHangChanged"
-                                   TextColor="White"
+                                   TextColor="Black"
                                    FontSize="13"
                                    PlaceholderColor="Gray"/>
                             <Label x:Name="lblThongTinKH"
-                                   TextColor="LightGreen"
+                                   TextColor="Black"
                                    FontSize="13"
                                    IsVisible="False" />
                         </VerticalStackLayout>
@@ -85,7 +85,7 @@
                             Text="✅ Xác nhận khách này"
                             Clicked="OnXacNhanKhachClicked"
                             BackgroundColor="Green"
-                            TextColor="White"
+                            TextColor="Black"
                             IsVisible="False"/>
 
                     <!-- Thêm khách mới -->
@@ -99,26 +99,26 @@
                             <RoundRectangle CornerRadius="15" />
                         </Border.StrokeShape>
                         <VerticalStackLayout>
-                            <Label Text="📞 Nhập số điện thoại" TextColor="White" FontSize="13" FontAttributes="Bold"/>
+                            <Label Text="📞 Nhập số điện thoại" TextColor="Red" FontSize="13" FontAttributes="Bold"/>
                             <Entry x:Name="entrySoDienThoai"
                                    Placeholder="Nhập số điện thoại"
                                    FontSize="13"
-                                   TextColor="White" PlaceholderColor="Gray"/>
-                            <Label Text="🏠 Địa chỉ" TextColor="White" FontSize="13" FontAttributes="Bold"/>
+                                   TextColor="Black" PlaceholderColor="Gray"/>
+                            <Label Text="🏠 Địa chỉ" TextColor="Red" FontSize="13" FontAttributes="Bold"/>
                             <Entry x:Name="entryDiaChi"
                                    Placeholder="Nhập địa chỉ"
                                    FontSize="13"
-                                   TextColor="White" PlaceholderColor="Gray"/>
-                            <Label Text="🪪 CCCD" TextColor="White" FontSize="13" FontAttributes="Bold"/>
+                                   TextColor="Black" PlaceholderColor="Gray"/>
+                            <Label Text="🪪 CCCD" TextColor="Red" FontSize="13" FontAttributes="Bold"/>
                             <Entry x:Name="entryCCCD"
                                    Placeholder="Nhập số CCCD"
                                    FontSize="13"
-                                   TextColor="White" PlaceholderColor="Gray"/>
+                                   TextColor="Black" PlaceholderColor="Gray"/>
                             <Button x:Name="btnThemKhachHang"
                                     Text="Thêm khách hàng mới"
                                     Clicked="OnThemKhachHangClicked"
                                     BackgroundColor="#1E90FF"
-                                    TextColor="White"/>
+                                    TextColor="Black"/>
                         </VerticalStackLayout>
                     </Border>
 

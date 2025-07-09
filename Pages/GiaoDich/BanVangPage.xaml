@@ -201,7 +201,7 @@
                     <RoundRectangle CornerRadius="15"/>
                 </Border.StrokeShape>
                 <Label x:Name="lblQRDetails"
-           TextColor="White"
+           TextColor="Red"
            FontSize="13"
            FontAttributes="Bold"
            HorizontalTextAlignment="Start" />

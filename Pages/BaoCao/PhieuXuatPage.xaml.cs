@@ -38,6 +38,12 @@ public partial class PhieuXuatPage : ContentPage
             if (!string.IsNullOrWhiteSpace(result))
             {
                 _viewModel.SearchKeyword = result;
+                // Đợi ViewModel cập nhật danh sách (nếu cần có thể await LoadPhieuXuatAsync)
+                await Task.Delay(300);
+                if (_viewModel.DanhSachPhieuXuat == null || _viewModel.DanhSachPhieuXuat.Count == 0)
+                {
+                    await DisplayAlert("Thông báo", $"Không tìm thấy '{result}' trong danh sách", "OK");
+                }
             }
         }
     }

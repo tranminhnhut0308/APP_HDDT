@@ -349,7 +349,6 @@
                                    BackgroundColor="Transparent"
                                    Margin="12,0" />
                         </Frame>
-
                         <!-- Connect Button -->
                         <Frame BackgroundColor="Transparent" 
                                BorderColor="#32CD32" 
@@ -366,7 +365,6 @@
                                     FontSize="16"
                                     HorizontalOptions="FillAndExpand" />
                         </Frame>
-
                     </VerticalStackLayout>
                 </Frame>
                

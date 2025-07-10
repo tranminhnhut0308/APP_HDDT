@@ -3,7 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="MyLoginApp.Pages.LoginPage"
              Title="Quản Lý Tiệm Vàng"
-             BackgroundColor="#3E2F1C">
+             BackgroundColor="Black">
 
     <Shell.TitleView>
         <Grid ColumnDefinitions="*,Auto" VerticalOptions="Center" Padding="10,0">
@@ -24,14 +24,9 @@
         </Grid>
     </Shell.TitleView>
 
-    <!-- Background với gradient vàng sang trọng -->
+    <!-- Background màu đen -->
     <ContentPage.Background>
-        <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
-            <GradientStop Color="#4B3621" Offset="0.0" />
-            <GradientStop Color="#5C4422" Offset="0.3" />
-            <GradientStop Color="#6F4E37" Offset="0.7" />
-            <GradientStop Color="#7E5A3C" Offset="1.0" />
-        </LinearGradientBrush>
+        <SolidColorBrush Color="Black" />
     </ContentPage.Background>
 
     <Grid>

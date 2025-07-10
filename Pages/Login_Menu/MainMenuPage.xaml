@@ -3,7 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="MyLoginApp.Pages.MainMenuPage"
               Title="Trang chủ"
-             BackgroundColor="#3E2F1C">
+             BackgroundColor="Black">
 
     <Shell.TitleView>
         <Grid ColumnDefinitions="*,Auto" VerticalOptions="Center" Padding="10,0">

@@ -163,26 +163,48 @@
                         <ColumnDefinition Width="*" />
                         <ColumnDefinition Width="*" />
                     </Grid.ColumnDefinitions>
-                    
-                    <!-- Nút Bán Vàng -->
-                    <Button Grid.Column="0" 
-                            Text="BÁN VÀNG" 
-                            BackgroundColor="#FFD700" 
-                            TextColor="#8B4513" 
-                            FontAttributes="Bold"
-                            Clicked="OnBanVangButtonClicked"
-                            HeightRequest="45"
-                            CornerRadius="10"/>
-                    
-                    <!-- Nút Cầm Vàng -->
-                    <Button Grid.Column="1" 
-                            Text="CẦM VÀNG" 
-                            BackgroundColor="#FFD700" 
-                            TextColor="#8B4513" 
-                            FontAttributes="Bold"
-                            Clicked="OnCamVangButtonClicked"
-                            HeightRequest="45"
-                            CornerRadius="10"/>
+                    <!-- Nút Bán Vàng - bạc sáng hiện đại -->
+                    <Button
+                        Grid.Column="0"
+                        Text="💰  BÁN VÀNG"
+                        FontAttributes="Bold"
+                        FontSize="16"
+                        TextColor="#8B4513"
+                        CornerRadius="22"
+                        HeightRequest="48"
+                        Clicked="OnBanVangButtonClicked"
+                        Padding="0,0">
+                        <Button.Background>
+                            <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                                <GradientStop Color="#F5F5F5" Offset="0.0" />
+                                <GradientStop Color="#E0E0E0" Offset="1.0" />
+                            </LinearGradientBrush>
+                        </Button.Background>
+                        <Button.Shadow>
+                            <Shadow Brush="#888" Opacity="0.2" Offset="2,2" Radius="6"/>
+                        </Button.Shadow>
+                    </Button>
+                    <!-- Nút Cầm Vàng - bạc sáng hiện đại -->
+                    <Button
+                        Grid.Column="1"
+                        Text="🤝  CẦM VÀNG"
+                        FontAttributes="Bold"
+                        FontSize="16"
+                        TextColor="#8B4513"
+                        CornerRadius="22"
+                        HeightRequest="48"
+                        Clicked="OnCamVangButtonClicked"
+                        Padding="0,0">
+                        <Button.Background>
+                            <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                                <GradientStop Color="#F5F5F5" Offset="0.0" />
+                                <GradientStop Color="#E0E0E0" Offset="1.0" />
+                            </LinearGradientBrush>
+                        </Button.Background>
+                        <Button.Shadow>
+                            <Shadow Brush="#888" Opacity="0.2" Offset="2,2" Radius="6"/>
+                        </Button.Shadow>
+                    </Button>
                 </Grid>
 
                 <!-- Lưới Menu với thiết kế cao cấp -->

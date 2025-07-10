@@ -188,9 +188,8 @@
                 <!-- Lưới Menu với thiết kế cao cấp -->
                 <Grid ColumnSpacing="18" RowSpacing="18" Margin="0,10">
                     <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="*" />
                     </Grid.RowDefinitions>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*" />
@@ -200,9 +199,7 @@
                     <!-- DANH MỤC - Với gradient và shadow -->
                     <Frame Grid.Row="0" Grid.Column="0"
                            CornerRadius="20"
-                           Padding="0"
-                           HeightRequest="130"
-                           
+                           Padding="8"
                            BorderColor="Transparent">
                         <Frame.Background>
                             <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
@@ -210,10 +207,10 @@
                                 <GradientStop Color="#FFFACD" Offset="1.0" />
                             </LinearGradientBrush>
                         </Frame.Background>
-                        <VerticalStackLayout Spacing="8" HorizontalOptions="Center" VerticalOptions="Center">
-                            <Label Text="📁" FontSize="30"/>
-                            <Label Text="DANH MỤC" FontSize="13" TextColor="#B8860B" FontAttributes="Bold" />
-                            <Label Text="Quản lý sản phẩm" FontSize="10" TextColor="#DAA520" />
+                        <VerticalStackLayout Spacing="8" HorizontalOptions="Start" VerticalOptions="Center" Padding="16,0">
+                            <Label Text="📁" FontSize="30" HorizontalOptions="Start"/>
+                            <Label Text="DANH MỤC" FontSize="12" TextColor="#B8860B" FontAttributes="Bold" HorizontalOptions="Start"/>
+                            <Label Text="Quản lý sản phẩm" FontSize="11" TextColor="#DAA520" HorizontalOptions="Start"/>
                         </VerticalStackLayout>
                         <Frame.GestureRecognizers>
                             <TapGestureRecognizer Tapped="OnDanhMucTapped" />
@@ -223,9 +220,7 @@
                     <!-- HỆ THỐNG -->
                     <Frame Grid.Row="0" Grid.Column="1"
                            CornerRadius="20"
-                           Padding="0"
-                           HeightRequest="130"
-                           
+                           Padding="8"
                            BorderColor="Transparent">
                         <Frame.Background>
                             <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
@@ -233,10 +228,10 @@
                                 <GradientStop Color="#FFFACD" Offset="1.0" />
                             </LinearGradientBrush>
                         </Frame.Background>
-                        <VerticalStackLayout Spacing="8" HorizontalOptions="Center" VerticalOptions="Center">
-                            <Label Text="⚙️" FontSize="30"/>
-                            <Label Text="HỆ THỐNG" FontSize="13" TextColor="#B8860B" FontAttributes="Bold" />
-                            <Label Text="Cài đặt và cấu hình" FontSize="10" TextColor="#DAA520" />
+                        <VerticalStackLayout Spacing="8" HorizontalOptions="Start" VerticalOptions="Center" Padding="16,0">
+                            <Label Text="⚙️" FontSize="30" HorizontalOptions="Start"/>
+                            <Label Text="HỆ THỐNG" FontSize="12" TextColor="#B8860B" FontAttributes="Bold" HorizontalOptions="Start"/>
+                            <Label Text="Cài đặt và cấu hình" FontSize="11" TextColor="#DAA520" HorizontalOptions="Start"/>
                         </VerticalStackLayout>
                         <Frame.GestureRecognizers>
                             <TapGestureRecognizer Tapped="OnHeThongTapped" />
@@ -246,9 +241,7 @@
                     <!-- CẦM VÀNG -->
                     <Frame Grid.Row="1" Grid.Column="0"
                            CornerRadius="20"
-                           Padding="0"
-                           HeightRequest="130"
-                          
+                           Padding="8"
                            BorderColor="Transparent">
                         <Frame.Background>
                             <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
@@ -256,22 +249,20 @@
                                 <GradientStop Color="#FFFACD" Offset="1.0" />
                             </LinearGradientBrush>
                         </Frame.Background>
-                        <VerticalStackLayout Spacing="8" HorizontalOptions="Center" VerticalOptions="Center">
-                            <Label Text="🏆" FontSize="30" />
-                            <Label Text="BÁO CÁO CẦM VÀNG" FontSize="13" TextColor="#B8860B" FontAttributes="Bold" />
-                            <Label Text="Dịch vụ thế chấp" FontSize="10" TextColor="#DAA520" />
+                        <VerticalStackLayout Spacing="8" HorizontalOptions="Start" VerticalOptions="Center" Padding="16,0">
+                            <Label Text="🏆" FontSize="30" HorizontalOptions="Start"/>
+                            <Label Text="BÁO CÁO CẦM VÀNG" FontSize="12" TextColor="#B8860B" FontAttributes="Bold" HorizontalOptions="Start"/>
+                            <Label Text="Dịch vụ thế chấp" FontSize="11" TextColor="#DAA520" HorizontalOptions="Start"/>
                         </VerticalStackLayout>
                         <Frame.GestureRecognizers>
                             <TapGestureRecognizer Tapped="OnCamVangTapped" />
                         </Frame.GestureRecognizers>
                     </Frame>
 
-                    <!-- BÁO CÁO -->
+                    <!-- BÁO CÁO MUA BÁN -->
                     <Frame Grid.Row="1" Grid.Column="1"
                            CornerRadius="20"
-                           Padding="0"
-                           HeightRequest="130"
-                           
+                           Padding="8"
                            BorderColor="Transparent">
                         <Frame.Background>
                             <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
@@ -279,10 +270,10 @@
                                 <GradientStop Color="#FFFACD" Offset="1.0" />
                             </LinearGradientBrush>
                         </Frame.Background>
-                        <VerticalStackLayout Spacing="8" HorizontalOptions="Center" VerticalOptions="Center">
-                            <Label Text="📊" FontSize="30" />
-                            <Label Text="BÁO CÁO MUA BÁN" FontSize="13" TextColor="#B8860B" FontAttributes="Bold" />
-                            <Label Text="Thống kê doanh thu" FontSize="10" TextColor="#DAA520" />
+                        <VerticalStackLayout Spacing="8" HorizontalOptions="Start" VerticalOptions="Center" Padding="16,0">
+                            <Label Text="📊" FontSize="30" HorizontalOptions="Start"/>
+                            <Label Text="BÁO CÁO MUA BÁN" FontSize="12" TextColor="#B8860B" FontAttributes="Bold" HorizontalOptions="Start"/>
+                            <Label Text="Thống kê doanh thu" FontSize="11" TextColor="#DAA520" HorizontalOptions="Start"/>
                         </VerticalStackLayout>
                         <Frame.GestureRecognizers>
                             <TapGestureRecognizer Tapped="OnBaoCaoTapped" />

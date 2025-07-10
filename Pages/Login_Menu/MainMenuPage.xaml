@@ -3,7 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="MyLoginApp.Pages.MainMenuPage"
               Title="Trang chủ"
-             BackgroundColor="Black">
+             BackgroundColor="#3E2F1C">
 
     <Shell.TitleView>
         <Grid ColumnDefinitions="*,Auto" VerticalOptions="Center" Padding="10,0">
@@ -97,7 +97,11 @@
                                   
 
                                     <!-- Separator Line -->
-                                    
+                                    <BoxView BackgroundColor="#FFD700"
+                                 HeightRequest="2"
+                                 WidthRequest="100"
+                                 HorizontalOptions="Center"
+                                 Margin="0,5" />
 
                                    
                                 </VerticalStackLayout>
@@ -169,9 +173,7 @@
                         CornerRadius="22"
                         HeightRequest="48"
                         Clicked="OnBanVangButtonClicked"
-                        Padding="0,0"
-                        BorderColor="#FFFACD"
-                        BorderWidth="3">
+                        Padding="0,0">
                         <Button.Background>
                             <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
                                 <GradientStop Color="#F5F5F5" Offset="0.0" />
@@ -192,9 +194,7 @@
                         CornerRadius="22"
                         HeightRequest="48"
                         Clicked="OnCamVangButtonClicked"
-                        Padding="0,0"
-                        BorderColor="#FFFACD"
-                        BorderWidth="3">
+                        Padding="0,0">
                         <Button.Background>
                             <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
                                 <GradientStop Color="#F5F5F5" Offset="0.0" />

@@ -122,9 +122,21 @@ namespace MyLoginApp.Pages
             int stt = 1;
             foreach (var item in scannedItems)
             {
+                var hangHoa = item.HangHoa;
+                decimal canTong = item.Weight;
+                decimal tlHot = 0;
+                decimal tlVang = item.Weight;
+                if (hangHoa != null)
+                {
+                    canTong = hangHoa.CanTong;
+                    tlHot = hangHoa.TrongLuongHot;
+                    tlVang = hangHoa.CanTong - hangHoa.TrongLuongHot;
+                }
                 billBuilder.AppendLine($"{stt}. {item.Name} - {item.GoldType}");
                 billBuilder.AppendLine($"   Mã: {item.Id}");
-                billBuilder.AppendLine($"   TL: {item.Weight / 1000.0m}l");
+                billBuilder.AppendLine($"   Cân tổng: {canTong/1000.0m}𝓵");
+                billBuilder.AppendLine($"   TL hột: {tlHot/1000.0m}𝓵");
+                billBuilder.AppendLine($"   TL vàng: {tlVang/1000.0m}𝓵");
                 billBuilder.AppendLine($"   Đơn giá: {item.Price:N0}đ");
                 billBuilder.AppendLine($"   Thành tiền: {item.Total:N0}đ");
                 billBuilder.AppendLine("-------------------------");
@@ -853,9 +865,9 @@ namespace MyLoginApp.Pages
                         lblQRDetails.Text =
                                 $"📦 {"Tên hàng    :".PadRight(10)}   {hangHoa.TenHangHoa}\n" +
                                 $"🏷️ {"Loại vàng   :".PadRight(10)}   {hangHoa.LoaiVang}\n" +
-                                $"⚖️ {"Cân tổng    :".PadRight(10)}   {hangHoa.CanTong/1000.0m}l\n" +
-                                $"💎 {"Hột         :".PadRight(10)}   {hangHoa.TrongLuongHot/1000.0m}l\n" +
-                                $"💰 {"Trọng l.vàng:".PadRight(10)}   {truHot/1000.0m}l\n" +
+                                $"⚖️ {"Cân tổng    :".PadRight(10)}   {hangHoa.CanTong/1000.0m} L\n" +
+                                $"💎 {"Hột         :".PadRight(10)}   {hangHoa.TrongLuongHot/1000.0m} L\n" +
+                                $"💰 {"Trọng l.vàng:".PadRight(10)}   {truHot/1000.0m} L\n" +
                                 $"💰 {"Đơn giá bán :".PadRight(10)}   {donGiaBan:N0}đ\n" +
                                 $"🛠️ {"Giá công    :".PadRight(10)}   {hangHoa.GiaCong:N0}đ\n" +
                                 $"🧾 {"Thành Tiền   :".PadRight(10)}   {TongTien:N0}đ";

@@ -42,6 +42,7 @@ namespace MyLoginApp.Pages
         private bool isCameraOn = false;
         private bool isProcessingBarcode = true;
         private IAudioPlayer _audioPlayer;
+        private IAudioPlayer _audioPlayerError;
         private KhachHang khachHangDaChon;
         private string maVangQuetDuoc;
         private ObservableCollection<KhachHang> DanhSachKhachHang = new();
@@ -60,7 +61,7 @@ namespace MyLoginApp.Pages
         {
             InitializeComponent();
             _electronicInvoiceService = electronicInvoiceService;
-            // InitializeAudioPlayerAsync();
+            InitializeAudioPlayerAsync(); // Bổ sung khởi tạo audio
 
         }
         // Constructor cũ để đảm bảo khả năng tương thích ngược
@@ -69,13 +70,15 @@ namespace MyLoginApp.Pages
             InitializeComponent();
             // Lấy service từ DI container nếu có
             _electronicInvoiceService = MauiProgram.Services?.GetService<IElectronicInvoiceService>();
-            // InitializeAudioPlayerAsync();
+            InitializeAudioPlayerAsync(); // Bổ sung khởi tạo audio
         }
         private async void InitializeAudioPlayerAsync()
         {
             var audioService = AudioManager.Current;
-            var stream = await FileSystem.OpenAppPackageFileAsync("beep.mp3");
+            var stream = await FileSystem.OpenAppPackageFileAsync("Resources/Raw/beep.wav");
             _audioPlayer = audioService.CreatePlayer(stream);
+            var streamError = await FileSystem.OpenAppPackageFileAsync("Resources/Raw/error.mp3");
+            _audioPlayerError = audioService.CreatePlayer(streamError);
         }
         // Cải thiện lấy nét cho camera, tối ưu cho khoảng cách gần
 
@@ -725,6 +728,10 @@ namespace MyLoginApp.Pages
                 var result = reader.Decode(bitmap);
                 if (result == null || string.IsNullOrWhiteSpace(result.Text))
                 {
+                    if (_audioPlayerError != null)
+                    {
+                        _audioPlayerError.Play();
+                    }
                     lblQRDetails.Text = "❌ Không tìm thấy mã QR trong ảnh. Vui lòng chụp mã rõ nét, chính diện và đủ sáng.";
                     return null;
                 }
@@ -762,6 +769,10 @@ namespace MyLoginApp.Pages
 
                         if (hangHoa == null)
                         {
+                            if (_audioPlayerError != null)
+                            {
+                                _audioPlayerError.Play();
+                            }
                             lblQRDetails.FormattedText = new FormattedString
                             {
                                 Spans = {
@@ -783,6 +794,10 @@ namespace MyLoginApp.Pages
                             
                             if (result == null || result == DBNull.Value)
                             {
+                                if (_audioPlayerError != null)
+                                {
+                                    _audioPlayerError.Play();
+                                }
                                 lblQRDetails.Text = "❌ Hàng hóa không tồn tại trong kho.";
                                 return;
                             }
@@ -790,6 +805,10 @@ namespace MyLoginApp.Pages
                             int slTon = Convert.ToInt32(result);
                             if (slTon <= 0)
                             {
+                                if (_audioPlayerError != null)
+                                {
+                                    _audioPlayerError.Play();
+                                }
                                 string message = slTon == 0 ? "đã được bán trước đó" : "không tồn tại trong kho";
                                 lblQRDetails.Text = $"❌ Hàng hóa {message}.";
                                 return;
@@ -798,6 +817,12 @@ namespace MyLoginApp.Pages
 
                         // Lấy đơn giá bán từ nhóm hàng
                         var loaiVang = await DatabaseHelper.Lay_DonGiaBan_loaivang_TheoMa_hanghoaAsync(qrResult.Trim());
+
+                        // PHÁT ÂM THANH BÍP khi quét thành công
+                        if (_audioPlayer != null)
+                        {
+                            _audioPlayer.Play();
+                        }
 
                         // Tính toán tổng tiền dựa trên thông tin vàng và đơn giá
                         decimal donGiaBan = loaiVang?.DonGiaBan ?? hangHoa.DonViGoc; // Fallback to DonViGoc if loaiVang is null

@@ -75,10 +75,26 @@ namespace MyLoginApp.Pages
         private async void InitializeAudioPlayerAsync()
         {
             var audioService = AudioManager.Current;
-            var stream = await FileSystem.OpenAppPackageFileAsync("Resources/Raw/beep.wav");
-            _audioPlayer = audioService.CreatePlayer(stream);
-            var streamError = await FileSystem.OpenAppPackageFileAsync("Resources/Raw/error.mp3");
-            _audioPlayerError = audioService.CreatePlayer(streamError);
+
+            try
+            {
+                var stream = await FileSystem.OpenAppPackageFileAsync("Resources/Raw/beep.wav");
+                _audioPlayer = audioService.CreatePlayer(stream);
+            }
+            catch
+            {
+                _audioPlayer = null;
+            }
+
+            try
+            {
+                var streamError = await FileSystem.OpenAppPackageFileAsync("Resources/Raw/error.mp3");
+                _audioPlayerError = audioService.CreatePlayer(streamError);
+            }
+            catch
+            {
+                _audioPlayerError = null;
+            }
         }
         // Cải thiện lấy nét cho camera, tối ưu cho khoảng cách gần
 
@@ -108,7 +124,8 @@ namespace MyLoginApp.Pages
             {
                 billBuilder.AppendLine($"{stt}. {item.Name} - {item.GoldType}");
                 billBuilder.AppendLine($"   Mã: {item.Id}");
-                billBuilder.AppendLine($"   TL: {item.Weight}g - Đơn giá: {item.Price:N0}đ");
+                billBuilder.AppendLine($"   TL: {item.Weight / 1000.0m}l");
+                billBuilder.AppendLine($"   Đơn giá: {item.Price:N0}đ");
                 billBuilder.AppendLine($"   Thành tiền: {item.Total:N0}đ");
                 billBuilder.AppendLine("-------------------------");
                 stt++;
@@ -128,16 +145,16 @@ namespace MyLoginApp.Pages
                 if (phieuXuatCreated)
                 {
                     // Tạo hóa đơn điện tử
-                    /*bool electronicInvoiceCreated = await CreateElectronicInvoiceAsync();
+                    bool electronicInvoiceCreated = await CreateElectronicInvoiceAsync();
 
                     if (electronicInvoiceCreated)
                     {
-                        await DisplayAlert("Thành công", "✅ Hóa đơn điện tử đã được tạo thành công!", "OK");
+                        await DisplayAlert("Thành công", "✅ Hóa đơn điện tử được tạo thành công!", "OK");
                     }
                     else
                     {
                         await DisplayAlert("Cảnh báo", "⚠️ Hóa đơn điện tử tạo thất bại, nhưng phiếu xuất đã được lưu.", "OK");
-                    }*/
+                    }
 
                     // Chuyển sang trang HoaDonPage để xem chi tiết hóa đơn
                     await Navigation.PushAsync(new HoaDonPage(khachHangDaChon, scannedItems, ThanhToan));
@@ -836,9 +853,9 @@ namespace MyLoginApp.Pages
                         lblQRDetails.Text =
                                 $"📦 {"Tên hàng    :".PadRight(10)}   {hangHoa.TenHangHoa}\n" +
                                 $"🏷️ {"Loại vàng   :".PadRight(10)}   {hangHoa.LoaiVang}\n" +
-                                $"⚖️ {"Cân tổng    :".PadRight(10)}   {hangHoa.CanTong:N3}g\n" +
-                                $"💎 {"Hột         :".PadRight(10)}   {hangHoa.TrongLuongHot:N3}g\n" +
-                                $"💰 {"Trọng l.vàng:".PadRight(10)}   {truHot:N3}g\n" +
+                                $"⚖️ {"Cân tổng    :".PadRight(10)}   {hangHoa.CanTong/1000.0m}l\n" +
+                                $"💎 {"Hột         :".PadRight(10)}   {hangHoa.TrongLuongHot/1000.0m}l\n" +
+                                $"💰 {"Trọng l.vàng:".PadRight(10)}   {truHot/1000.0m}l\n" +
                                 $"💰 {"Đơn giá bán :".PadRight(10)}   {donGiaBan:N0}đ\n" +
                                 $"🛠️ {"Giá công    :".PadRight(10)}   {hangHoa.GiaCong:N0}đ\n" +
                                 $"🧾 {"Thành Tiền   :".PadRight(10)}   {TongTien:N0}đ";

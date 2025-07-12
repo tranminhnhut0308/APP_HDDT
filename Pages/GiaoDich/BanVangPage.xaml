@@ -201,7 +201,7 @@
                     <RoundRectangle CornerRadius="15"/>
                 </Border.StrokeShape>
                 <Label x:Name="lblQRDetails"
-           TextColor="Red"
+           TextColor="Black"
            FontSize="13"
            FontAttributes="Bold"
            HorizontalTextAlignment="Start" />
@@ -214,7 +214,7 @@
                 <Label x:Name="lblTongTien"
                        Text="🧮 Thành tiền: 0đ"
                        FontSize="15"
-                       TextColor="Black"
+                       TextColor="Red"
                        HorizontalOptions="Center"
                        IsVisible="False"/>
             </VerticalStackLayout>

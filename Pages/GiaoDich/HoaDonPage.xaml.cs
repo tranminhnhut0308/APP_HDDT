@@ -24,10 +24,25 @@ public partial class HoaDonPage : ContentPage
         int stt = 1;
         foreach (var item in danhSachHangHoa)
         {
+            var hangHoa = item.HangHoa;
+            decimal truHot = 0;
+            decimal donGiaBan = item.Price;
+            decimal giaCong = 0;
+            if (hangHoa != null)
+            {
+                truHot = (hangHoa.CanTong - hangHoa.TrongLuongHot)/1000;
+                donGiaBan = hangHoa.DonViGoc;
+                giaCong = hangHoa.GiaCong;
+            }
+            else
+            {
+                truHot = item.Weight / 1000; // fallback nếu không có model chi tiết
+            }
+
             bill.AppendLine($"{stt}. {item.Name} - {item.GoldType}");
             bill.AppendLine($"   Mã: {item.Id}");
-            bill.AppendLine($"   Trọng lượng: {item.Weight:N3}g");
-            bill.AppendLine($"   Đơn giá: {item.Price:N0}đ");
+            bill.AppendLine($"   TL: {item.Weight/1000.0m}l");
+            bill.AppendLine($"   Đơn giá: {donGiaBan:N0}đ");
             bill.AppendLine($"   Thành tiền: {item.Total:N0}đ");
             bill.AppendLine("-------------------------");
             stt++;

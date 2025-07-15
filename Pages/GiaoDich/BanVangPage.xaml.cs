@@ -109,7 +109,7 @@ namespace MyLoginApp.Pages
 
             if (scannedItems.Count == 0)
             {
-                await DisplayAlert("Thiếu thông tin", "Vui lòng quét mã vàng trước khi thanh toán.", "OK");
+                await DisplayAlert("Thiếu thông tin", "Vui lòng quét tem vàng trước khi thanh toán.", "OK");
                 return;
             }
 

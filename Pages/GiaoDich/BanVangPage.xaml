@@ -4,6 +4,25 @@
                           x:Class="MyLoginApp.Pages.BanVangPage"
                           BackgroundColor="White"
              Title="Bán Vàng">
+    <Shell.TitleView>
+        <Grid ColumnDefinitions="*,Auto" Padding="10,0">
+            <Label Text="Bán Vàng"
+                   FontSize="22"
+                   FontAttributes="Bold"
+                   TextColor="White"
+                   VerticalOptions="Center"/>
+            <Button
+                Grid.Column="1"
+                Text="🔄"
+                FontSize="22"
+                BackgroundColor="Transparent"
+                Clicked="OnResetClicked"
+                WidthRequest="60"
+                HeightRequest="60"
+                HorizontalOptions="End"
+                VerticalOptions="Center"/>
+        </Grid>
+    </Shell.TitleView>
     <ContentPage.Resources>
         <ResourceDictionary>
             <Style x:Key="NutChuan" TargetType="Button">
@@ -29,18 +48,64 @@
                 <Border.StrokeShape>
                     <RoundRectangle CornerRadius="20" />
                 </Border.StrokeShape>
-                <Label Text="💰 Bán Vàng"
-                       FontSize="35"
-                       FontAttributes="Bold"
-                       TextColor="#FFD700"
-                       HorizontalOptions="Center"/>
+                <Grid ColumnDefinitions="*,Auto" VerticalOptions="Center">
+                    <Label Text="💰 Bán Vàng"
+                           FontSize="35"
+                           FontAttributes="Bold"
+                           TextColor="#FFD700"
+                           VerticalOptions="Center"
+                           HorizontalOptions="Center"/>
+                </Grid>
             </Border>
 
-            <Button x:Name="btnChonKhachHang"
-                    Text="👤 Chọn khách hàng"
-                    Clicked="OnChonKhachHangClicked"
-                    BackgroundColor="#FF8C00"
-                    TextColor="White"/>
+            <Grid ColumnSpacing="15" Margin="0,0,0,10">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <!-- Cột 1: Nút + chú thích -->
+                <VerticalStackLayout Grid.Column="0" HorizontalOptions="Center">
+                    <Button x:Name="btnChonKhachHang"
+                            Text="👤"
+                            FontSize="32"
+                            FontAttributes="Bold"
+                            BackgroundColor="#FF8C00"
+                            TextColor="White"
+                            HeightRequest="80"
+                            WidthRequest="120"
+                            CornerRadius="16"
+                            Clicked="OnChonKhachHangClicked"
+                            Padding="0"
+                            HorizontalOptions="Center"
+                            VerticalOptions="Center"/>
+                    <Label Text="Chọn khách hàng"
+                           FontSize="14"
+                           TextColor="#444"
+                           HorizontalOptions="Center"
+                           Margin="0,6,0,0"/>
+                </VerticalStackLayout>
+                <!-- Cột 2: Nút + chú thích -->
+                <VerticalStackLayout Grid.Column="1" HorizontalOptions="Center">
+                    <Button x:Name="btnQuetVang"
+                            Text="📷"
+                            FontSize="32"
+                            FontAttributes="Bold"
+                            BackgroundColor="#4682B4"
+                            TextColor="White"
+                            HeightRequest="80"
+                            WidthRequest="120"
+                            CornerRadius="16"
+                            Clicked="OnChupVaQuetQRClicked"
+                            Padding="0"
+                            HorizontalOptions="Center"
+                            VerticalOptions="Center"/>
+                    <Label Text="Quét tem vàng"
+                           FontSize="14"
+                           TextColor="#444"
+                           HorizontalOptions="Center"
+                           Margin="0,6,0,0"/>
+                </VerticalStackLayout>
+            </Grid>
 
             <!-- Bao gồm cả nhập tên và quét CCCD -->
             <Border x:Name="frameCustomerSelectionArea"
@@ -168,11 +233,6 @@
                    IsVisible="False"
                    HorizontalOptions="Center"/>
 
-            <!-- Nút Chụp & Quét QR -->
-            <Button Text="📷 Quét Tem Vàng"
-            Clicked="OnChupVaQuetQRClicked"
-            BackgroundColor="Blue"
-            TextColor="White"/>
             <!-- Loading khi quét tem vàng -->
             <ActivityIndicator x:Name="loadingQuetVang"
                                IsVisible="False"
@@ -249,12 +309,6 @@
                     BackgroundColor="#32CD32"
                     TextColor="White"/>
 
-            <!-- Nút reset -->
-            <Button x:Name="btnReset"
-                    Text="🔄 Làm mới"
-                    Clicked="OnResetClicked"
-                    BackgroundColor="#FF4500"
-                    TextColor="White"/>
         </VerticalStackLayout>
     </ScrollView>
 </ContentPage>

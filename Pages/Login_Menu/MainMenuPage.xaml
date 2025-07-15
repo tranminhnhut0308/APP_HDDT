@@ -69,7 +69,7 @@
                                 </Grid.RowDefinitions>
 
                                 <!-- Logo Container with Elegant Circle Background -->
-                                <Grid Grid.Row="0" HorizontalOptions="Center" VerticalOptions="Center">
+                                <Grid Grid.Row="0" HorizontalOptions="Center" VerticalOptions="Center" HeightRequest="130" WidthRequest="130">
                                     <!-- Circular Background for Logo -->
                                     <Ellipse Fill="#FFD700" 
                                  WidthRequest="130" 
@@ -80,12 +80,12 @@
 
                                       <!-- Logo Image -->
                                     <Image Source="logo.png"
-                               HeightRequest="100"
-                               WidthRequest="100"
+                               HeightRequest="110"
+                               WidthRequest="110"
                                HorizontalOptions="Center"
                                VerticalOptions="Center"
-                               Aspect="AspectFill"
-                               Margin="0,0,0,0" />
+                               Aspect="AspectFit"
+                               Margin="0" />
                                 </Grid>
 
                                 <!-- Company Info Section -->
@@ -97,11 +97,11 @@
                                   
 
                                     <!-- Separator Line -->
-                                    <BoxView BackgroundColor="#FFD700"
+                                    <!-- <BoxView BackgroundColor="#FFD700"
                                  HeightRequest="2"
                                  WidthRequest="100"
                                  HorizontalOptions="Center"
-                                 Margin="0,5" />
+                                 Margin="0,5" /> -->
 
                                    
                                 </VerticalStackLayout>

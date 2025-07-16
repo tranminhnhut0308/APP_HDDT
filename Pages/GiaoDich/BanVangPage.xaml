@@ -88,7 +88,7 @@
                 <VerticalStackLayout Grid.Column="1" HorizontalOptions="Center">
                     <Button x:Name="btnQuetVang"
                             Text="📷"
-                            FontSize="32"
+                            FontSize="38"
                             FontAttributes="Bold"
                             BackgroundColor="#4682B4"
                             TextColor="White"

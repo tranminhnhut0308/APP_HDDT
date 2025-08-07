@@ -4,28 +4,28 @@
              BackgroundColor="#f5f5f5"
              Title="Phiếu đóng lãi">
 
+    <Shell.TitleView>
+        <Grid ColumnDefinitions="*,Auto" VerticalOptions="FillAndExpand">
+            <Label Text="💷 Phiếu Đóng Lãi"
+                   TextColor="White"
+                   FontSize="22"
+                   FontAttributes="Bold"
+                   VerticalTextAlignment="Center" />
+            <Button Text="🔍"
+                    Grid.Column="1"
+                    FontSize="22"
+                    FontAttributes="Bold"
+                    Clicked="OnTimKiemPhieuClicked"
+                    BackgroundColor="Transparent"
+                    BorderColor="Transparent"
+                    TextColor="White"
+                    VerticalOptions="Center"
+                    Padding="0,0,10,0"/>
+        </Grid>
+    </Shell.TitleView>
+
     <ScrollView Padding="5">
         <VerticalStackLayout Spacing="16">
-
-            <!-- Tìm kiếm đẹp và nổi bật -->
-            <Frame CornerRadius="20"
-                   Padding="0"
-                   Margin="12,10,12,0"
-                   BackgroundColor="White"
-                   HasShadow="True"
-                   BorderColor="#cccccc">
-                <SearchBar 
-                    Placeholder="Tìm kiếm theo mã phiếu hoặc tên khách hàng"
-                    TextChanged="OnSearchTextChanged"
-                    Text="{Binding SearchKeyword}"
-                    BackgroundColor="#f0f0f0"
-                    FontSize="16"
-                    HeightRequest="48"
-                    TextColor="#222"
-                    PlaceholderColor="#888"
-                    CancelButtonColor="#888"
-                    HorizontalTextAlignment="Start" />
-            </Frame>
 
             <!-- Danh sách phiếu đóng lãi -->
             <CollectionView ItemsSource="{Binding DanhSachPhieuDongLai}">

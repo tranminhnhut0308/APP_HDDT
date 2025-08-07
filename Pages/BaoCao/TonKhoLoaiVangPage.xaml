@@ -6,14 +6,15 @@
              x:Class="MyLoginApp.Pages.BaoCao.TonKhoLoaiVangPage">
 
     <Shell.TitleView>
-        <Grid>
+        <Grid ColumnDefinitions="*,Auto" VerticalOptions="FillAndExpand">
             <Label Text="Tồn Kho Loại Vàng"
                    FontSize="22"
                    FontAttributes="Bold"
                    TextColor="White"
                    VerticalOptions="Center"
-                   HorizontalOptions="Center" />
+                   HorizontalOptions="Start" />
             <Button Text="🔍"
+                    Grid.Column="1"
                     FontSize="22"
                     Clicked="OnTimKiemClicked"
                     HorizontalOptions="End"
